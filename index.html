@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <title>Tax Invoice Receipt</title>
     <style>
         * { box-sizing: border-box; }
-        /* Apply Montserrat to everything */
         body { 
             background: #dcdcdc; 
-            font-family: 'Montserrat', sans-serif; 
+            font-family: 'Roboto Mono', monospace; /* The receipt look */
             display: flex; 
             justify-content: center; 
             padding: 10px; 
@@ -20,14 +19,13 @@
             min-height: 100vh; 
         }
         .receipt { width: 100%; max-width: 350px; background: #fff; padding: 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); align-self: flex-start; }
-        .logo { font-size: 38px; font-weight: 800; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -1px; }
+        .logo { font-size: 38px; font-weight: 700; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -2px; }
         .text-center { text-align: center; }
         .flex { display: flex; justify-content: space-between; gap: 10px; }
-        .line { margin: 4px 0; font-size: 13px; line-height: 1.4; word-break: break-all; font-weight: 600; } /* Standard semi-bold */
+        .line { margin: 4px 0; font-size: 13px; line-height: 1.4; font-weight: 400; } 
         .hr { border-bottom: 2px solid #000; margin: 10px 0; }
         .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
-        /* Extra bold for items that need it */
-        .bold { font-weight: 800; } 
+        .bold { font-weight: 700; } 
         @media (max-width: 400px) { body { padding: 0; background: #fff; } .receipt { box-shadow: none; max-width: 100%; } }
     </style>
 </head>
@@ -80,6 +78,7 @@
 </div>
 
 <script>
+    // Updated with your specific URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
 
     function updateDateTime() {
