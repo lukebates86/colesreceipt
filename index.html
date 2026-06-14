@@ -67,8 +67,8 @@
 </div>
 
 <script>
-    // Paste the exact /exec URL that generated the clean JSON block inside the single quotes below:
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
+    // Put your actual Google Apps Script URL inside the quotes below
+    const API_URL = 'PASTE_YOUR_WORKING_EXEC_URL_HERE';
 
     function updateDateTime() {
         const now = new Date();
@@ -81,7 +81,8 @@
 
     async function loadData() {
         try {
-            const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(API_URL));
+            // Direct fetch without proxy dependency
+            const res = await fetch(API_URL);
             const data = await res.json();
             
             if (!Array.isArray(data)) {
