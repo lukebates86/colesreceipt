@@ -2,107 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tax Invoice Receipt</title>
     <style>
-        * { box-sizing: border-box; }
-        body { background: #dcdcdc; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; padding: 10px; color: #000; margin: 0; min-height: 100vh; }
-        .receipt { width: 100%; max-width: 350px; background: #fff; padding: 20px 15px; box-shadow: 0 0 15px rgba(0,0,0,0.15); align-self: flex-start; }
-        .logo { font-size: 38px; font-weight: 900; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -1px; }
-        .text-center { text-align: center; }
-        .flex { display: flex; justify-content: space-between; gap: 10px; }
-        .line { margin: 4px 0; font-size: 13px; line-height: 1.4; word-break: break-all; }
-        .hr { border-bottom: 2px solid #000; margin: 10px 0; }
-        .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
+        body { background: #dcdcdc; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; padding: 10px; color: #000; margin: 0; }
+        .receipt { width: 100%; max-width: 350px; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 38px; font-weight: 900; text-align: center; color: #e31837; }
+        .flex { display: flex; justify-content: space-between; }
+        .line { margin: 4px 0; font-size: 13px; }
+        .hr-dashed { border-bottom: 1px dashed #000; margin: 10px 0; }
         .bold { font-weight: bold; }
-        @media (max-width: 400px) { body { padding: 0; background: #fff; } .receipt { box-shadow: none; max-width: 100%; } }
     </style>
 </head>
 <body>
-
 <div class="receipt">
-    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
     <div class="logo">coles</div>
-    
-    <div class="line">Store: 7723 - CS SSC</div>
-    <div class="line">Store Manager: <span id="mgr">Alan Yee</span></div>
-    <div class="line">Phone: <span id="phn">(03) 9922 4300</span></div>
-    <div class="line">Served By: Assisted Checkout</div>
-    <div class="flex line"><span>Register: 111</span><span>Receipt: 493021</span></div>
-    <div class="flex line"><span>Date: <span id="date"></span></span><span>Time: <span id="time"></span></span></div>
-    
-    <div class="hr"></div>
-    <div class="flex line"><span class="bold">Description</span><span class="bold">$</span></div>
+    <div id="items-box">Loading...</div>
     <div class="hr-dashed"></div>
-
-    <div id="items-box">
-        <div class="line text-center" style="color: #666;">Loading items...</div>
-    </div>
-
-    <div class="hr-dashed"></div>
-    
-    <div class="flex line bold"><span id="item-count-label">Total items:</span><span id="total-amount">$0.00</span></div>
-    <br>
-    <div class="flex line"><span>EFT</span><span id="eft-amount">$0.00</span></div>
-    <div class="flex line bold"><span>GST INCLUDED IN TOTAL</span><span id="gst-amount">$0.00</span></div>
-    
-    <div class="hr-dashed" style="margin: 20px 0;"></div>
-    
-    <div class="flex line"><span>Coles</span><span>VIC AU</span></div>
-    <div class="flex line"><span><span id="date2"></span> <span id="time2"></span></span><span>39832829 &nbsp; NG23B1</span></div>
-    <div class="flex line"><span>***** 6784</span><span>MASTERCARD</span></div>
-    <div class="flex line"><span>CREDIT ACCOUNT</span><span>DEBIT MASTERCARD</span></div>
-    <div class="flex line"><span>APSN 0000 &nbsp; ATC 0618</span><span>A00000000041010</span></div>
-    <div class="flex line bold"><span>PURCHASE</span><span id="card-total">AUD$0.00</span></div>
-    <div class="line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
-    <div class="line">AUTH 013657</div>
-    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
-    
-    <div class="hr-dashed" style="margin: 20px 0;"></div>
-    
-    <div class="line">Flybuys Card NO: 27930284920194</div>
-    <div class="line">% = Taxable items</div>
-    <div class="line">Flybuys points as of yesterday: 1,454</div>
+    <div class="flex bold"><span>Total:</span><span id="total-amount">$0.00</span></div>
 </div>
 
 <script>
-    // PASTE YOUR COPIED GOOGLE WEB APP URL BETWEEN THE QUOTES BELOW
-    const API_URL = 'https://script.google.com/macros/library/d/1YbVz8AW3bn4Bnn_A47GXgVbeAH9PioDdryZhi4daRK7ssN9NfDAbwU5P/27';
+    // Paste your NEW /exec URL here
+    const API_URL = 'PASTE_YOUR_URL_HERE';
 
-    function updateDateTime() {
-        const now = new Date();
-        document.getElementById('date').innerText = now.toLocaleDateString('en-AU');
-        document.getElementById('date2').innerText = now.toLocaleDateString('en-AU', {day:'2-digit', month:'2-digit', year:'2-digit'});
-        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-        document.getElementById('time').innerText = timeString;
-        document.getElementById('time2').innerText = timeString;
-    }
+    async function loadReceiptData() {
+        try {
+            // Using a proxy to bypass the CORS block
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(API_URL);
+            const response = await fetch(proxyUrl);
+            const items = await response.json();
+            
+            let container = document.getElementById('items-box');
+            container.innerHTML = '';
+            let total = 0;
 
-async function loadReceiptData() {
-    try {
-        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(API_URL);
-        const response = await fetch(proxyUrl);
-        
-        // Get the text first to inspect it
-        const textResponse = await response.text();
-        
-        // If it starts with '<', it's an HTML error page from Google
-        if (textResponse.trim().startsWith('<')) {
-            throw new Error("Received HTML instead of JSON. Check your Google Script URL.");
+            items.forEach(item => {
+                total += item.price;
+                container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>$${item.price.toFixed(2)}</span></div>`;
+            });
+            
+            document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+        } catch (e) {
+            document.getElementById('items-box').innerHTML = 'Error loading data.';
+            console.error(e);
         }
-        
-        const items = JSON.parse(textResponse);
-        
-        // ... (rest of your existing render code) ...
-        
-    } catch (error) {
-        console.error("Fetch Exception:", error);
-        document.getElementById('items-box').innerHTML = `<div class="line" style="color:red;">Error: ${error.message}</div>`;
     }
-}
-
-    updateDateTime();
     loadReceiptData();
 </script>
 </body>
