@@ -79,46 +79,28 @@
         document.getElementById('time2').innerText = timeString;
     }
 
-    async function loadReceiptData() {
-        try {
-            // Added corsproxy.io wrapper directly to the request to permanently kill the CORS fetch block
-            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(API_URL);
-            const response = await fetch(proxyUrl);
-            
-            if (!response.ok) throw new Error("Network response error status: " + response.status);
-            
-            const items = await response.json(); 
-            let itemsContainer = document.getElementById('items-box');
-            itemsContainer.innerHTML = '';
-            
-            let runningTotal = 0;
-            let totalItemCount = 0;
-
-            if (!items || items.length === 0) {
-                itemsContainer.innerHTML = '<div class="line text-center">No rows returned from sheet</div>';
-                return;
-            }
-
-            items.forEach((item) => {
-                runningTotal += item.price;
-                totalItemCount++;
-
-                let div = document.createElement('div');
-                div.className = 'flex line';
-                div.innerHTML = `<span>${item.name}</span><span>${item.price.toFixed(2)}</span>`;
-                itemsContainer.appendChild(div);
-            });
-
-            document.getElementById('item-count-label').innerText = `Total for ${totalItemCount} item${totalItemCount === 1 ? '' : 's'}:`;
-            document.getElementById('total-amount').innerText = `$${runningTotal.toFixed(2)}`;
-            document.getElementById('eft-amount').innerText = `$${runningTotal.toFixed(2)}`;
-            document.getElementById('gst-amount').innerText = `$${(runningTotal / 11).toFixed(2)}`;
-            document.getElementById('card-total').innerText = `AUD$${runningTotal.toFixed(2)}`;
-        } catch (error) {
-            console.error("Fetch Exception:", error);
-            document.getElementById('items-box').innerHTML = `<div class="line text-center" style="color:red; font-size:11px;">Connection Error:<br>${error.message}</div>`;
+async function loadReceiptData() {
+    try {
+        const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(API_URL);
+        const response = await fetch(proxyUrl);
+        
+        // Get the text first to inspect it
+        const textResponse = await response.text();
+        
+        // If it starts with '<', it's an HTML error page from Google
+        if (textResponse.trim().startsWith('<')) {
+            throw new Error("Received HTML instead of JSON. Check your Google Script URL.");
         }
+        
+        const items = JSON.parse(textResponse);
+        
+        // ... (rest of your existing render code) ...
+        
+    } catch (error) {
+        console.error("Fetch Exception:", error);
+        document.getElementById('items-box').innerHTML = `<div class="line" style="color:red;">Error: ${error.message}</div>`;
     }
+}
 
     updateDateTime();
     loadReceiptData();
