@@ -3,19 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <title>Tax Invoice Receipt</title>
     <style>
         * { box-sizing: border-box; }
-        body { background: #dcdcdc; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; padding: 10px; color: #000; margin: 0; min-height: 100vh; }
+        /* Apply Montserrat to everything */
+        body { 
+            background: #dcdcdc; 
+            font-family: 'Montserrat', sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            padding: 10px; 
+            color: #000; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
         .receipt { width: 100%; max-width: 350px; background: #fff; padding: 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); align-self: flex-start; }
-        .logo { font-size: 38px; font-weight: 900; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -1px; }
+        .logo { font-size: 38px; font-weight: 800; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -1px; }
         .text-center { text-align: center; }
         .flex { display: flex; justify-content: space-between; gap: 10px; }
-        .line { margin: 4px 0; font-size: 13px; line-height: 1.4; word-break: break-all; }
+        .line { margin: 4px 0; font-size: 13px; line-height: 1.4; word-break: break-all; font-weight: 600; } /* Standard semi-bold */
         .hr { border-bottom: 2px solid #000; margin: 10px 0; }
         .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
-        .bold { font-weight: bold; }
+        /* Extra bold for items that need it */
+        .bold { font-weight: 800; } 
         @media (max-width: 400px) { body { padding: 0; background: #fff; } .receipt { box-shadow: none; max-width: 100%; } }
     </style>
 </head>
@@ -68,8 +80,7 @@
 </div>
 
 <script>
-    // Put your actual Google Apps Script URL inside the quotes below
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
+    const API_URL = 'PASTE_YOUR_WORKING_EXEC_URL_HERE';
 
     function updateDateTime() {
         const now = new Date();
@@ -82,16 +93,9 @@
 
     async function loadData() {
         try {
-            // Direct fetch without proxy dependency
             const res = await fetch(API_URL);
             const data = await res.json();
             
-            if (!Array.isArray(data)) {
-                console.error("Data payload is malformed:", data);
-                document.getElementById('items-box').innerHTML = '<div class="line text-center" style="color:red;">Invalid data layout returned</div>';
-                return;
-            }
-
             let total = 0;
             let count = 0;
             let container = document.getElementById('items-box');
@@ -109,8 +113,7 @@
             document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
             document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
         } catch(e) { 
-            console.error("Fetch Execution Error:", e); 
-            document.getElementById('items-box').innerHTML = `<div class="line text-center" style="color:red;">Connection Error to Sheet</div>`;
+            console.error(e); 
         }
     }
 
