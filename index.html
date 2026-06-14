@@ -8,25 +8,44 @@
     <title>Tax Invoice Receipt</title>
     <style>
         * { box-sizing: border-box; }
-        body { background: #dcdcdc; font-family: 'Roboto Mono', monospace; display: flex; justify-content: center; padding: 10px; color: #000; margin: 0; min-height: 100vh; }
-        .receipt { width: 100%; max-width: 350px; background: #fff; padding: 15px 20px 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); align-self: flex-start; }
+        body { 
+            background: #dcdcdc; 
+            font-family: 'Roboto Mono', monospace; 
+            display: flex; 
+            justify-content: center; 
+            padding: 10px; 
+            color: #000; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
         
-        /* Updated Header with larger icons and bolder/darker border */
+        .receipt { 
+            width: 100%; 
+            max-width: 350px; 
+            background: #fff; 
+            padding: 15px 20px 25px 20px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.15); 
+            align-self: flex-start; 
+            overflow: hidden; /* Prevents any edge spillover */
+        }
+        
+        /* Header bar spans completely edge-to-edge */
         .header-bar { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding-bottom: 18px; 
-            margin-bottom: 20px;  
+            padding: 15px 20px;            /* Internal spacing for elements inside the bar */
+            margin: -15px -20px 20px -20px; /* Counteracts receipt padding to hit screen edges flush */
             font-weight: 700; 
             font-size: 16px; 
-            border-bottom: 2px solid #a0a0a0; /* Double thickness and darker shade */
+            border-bottom: 2px solid #dcdcdc; /* Exact matching grey background color and double thickness */
+            background-color: #fff; 
         }
         
-        /* Icons increased by 30% */
+        /* Custom image icon sizing */
         .header-icon { 
-            width: 40px; 
-            height: 40px; 
+            width: 26px; 
+            height: 26px; 
             object-fit: contain; 
             display: block;
         }
@@ -38,7 +57,11 @@
         .hr { border-bottom: 2px solid #000; margin: 10px 0; }
         .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
         .bold { font-weight: 700; } 
-        @media (max-width: 400px) { body { padding: 0; background: #fff; } .receipt { box-shadow: none; max-width: 100%; } }
+        
+        @media (max-width: 400px) { 
+            body { padding: 0; background: #fff; } 
+            .receipt { box-shadow: none; max-width: 100%; } 
+        }
     </style>
 </head>
 <body>
@@ -47,7 +70,7 @@
     <div class="header-bar">
         <img src="Share.png" alt="Share" class="header-icon">
         <span>Digital Receipt</span>
-        <img src="Close.png" alt="Close" class="header-icon">
+        <img src="close.png" alt="Close" class="header-icon">
     </div>
 
     <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
@@ -96,6 +119,7 @@
 </div>
 
 <script>
+    // Live Google Apps Script API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
 
     function updateDateTime() {
@@ -128,7 +152,9 @@
             document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
             document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
             document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e); 
+        }
     }
 
     updateDateTime();
