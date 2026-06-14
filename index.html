@@ -26,28 +26,34 @@
             padding: 15px 20px 25px 20px; 
             box-shadow: 0 0 15px rgba(0,0,0,0.15); 
             align-self: flex-start; 
-            overflow: hidden; /* Prevents any edge spillover */
+            overflow: hidden; 
         }
         
-        /* Header bar spans completely edge-to-edge */
         .header-bar { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 15px 20px;            /* Internal spacing for elements inside the bar */
-            margin: -15px -20px 20px -20px; /* Counteracts receipt padding to hit screen edges flush */
+            padding: 15px 20px; 
+            margin: -15px -20px 20px -20px; 
             font-weight: 700; 
             font-size: 16px; 
-            border-bottom: 2px solid #dcdcdc; /* Exact matching grey background color and double thickness */
+            border-bottom: 2px solid #dcdcdc; 
             background-color: #fff; 
         }
         
-        /* Custom image icon sizing */
-        .header-icon { 
-            width: 26px; 
-            height: 26px; 
+        .header-icon { width: 26px; height: 26px; object-fit: contain; display: block; }
+        
+        /* Barcode Styles */
+        .barcode-container { 
+            text-align: center; 
+            margin-top: 30px; 
+            margin-bottom: 10px; 
+        }
+        .barcode-img { 
+            width: 100%; 
+            max-width: 250px; 
+            height: auto; 
             object-fit: contain; 
-            display: block;
         }
 
         .logo { font-size: 38px; font-weight: 700; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -2px; }
@@ -116,10 +122,13 @@
     <div class="line">Flybuys Card NO: 27930284920194</div>
     <div class="line">% = Taxable items</div>
     <div class="line">Flybuys points as of yesterday: 1,454</div>
+
+    <div class="barcode-container">
+        <img src="barcode.png" alt="Barcode" class="barcode-img">
+    </div>
 </div>
 
 <script>
-    // Live Google Apps Script API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
 
     function updateDateTime() {
@@ -152,9 +161,7 @@
             document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
             document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
             document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
-        } catch(e) { 
-            console.error(e); 
-        }
+        } catch(e) { console.error(e); }
     }
 
     updateDateTime();
