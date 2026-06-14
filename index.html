@@ -6,49 +6,69 @@
     <title>Tax Invoice Receipt</title>
     <style>
         body { background: #dcdcdc; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; padding: 10px; color: #000; margin: 0; }
-        .receipt { width: 100%; max-width: 350px; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .logo { font-size: 38px; font-weight: 900; text-align: center; color: #e31837; }
+        .receipt { width: 350px; background: #fff; padding: 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); }
+        .logo { font-size: 38px; font-weight: 900; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -1px; }
         .flex { display: flex; justify-content: space-between; }
-        .line { margin: 4px 0; font-size: 13px; }
-        .hr-dashed { border-bottom: 1px dashed #000; margin: 10px 0; }
+        .line { margin: 3px 0; font-size: 13px; line-height: 1.4; }
+        .hr { border-bottom: 2px solid #000; margin: 10px 0; }
+        .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
         .bold { font-weight: bold; }
     </style>
 </head>
 <body>
 <div class="receipt">
+    <div class="line" style="text-align:center;">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line" style="text-align:center;">Tax Invoice ABN: 45 004 189 708</div>
     <div class="logo">coles</div>
-    <div id="items-box">Loading...</div>
+    <div class="line">Store: 7723 - CS SSC</div>
+    <div class="line">Store Manager: Alan Yee</div>
+    <div class="line">Phone: (03) 9922 4300</div>
+    <div class="line">Served By: Assisted Checkout</div>
+    <div class="flex line"><span>Register: 111</span><span>Receipt: 493021</span></div>
+    <div class="flex line"><span>Date: 14/06/2026</span><span>Time: 20:10</span></div>
+    <div class="hr"></div>
+    <div class="flex line bold"><span>Description</span><span>$</span></div>
     <div class="hr-dashed"></div>
-    <div class="flex bold"><span>Total:</span><span id="total-amount">$0.00</span></div>
+    <div id="items-box"></div>
+    <div class="hr-dashed"></div>
+    <div class="flex line bold"><span id="item-count-label">Total:</span><span id="total-amount">$0.00</span></div>
+    <div class="flex line"><span>EFT</span><span id="eft-amount">$0.00</span></div>
+    <div class="flex line bold"><span>GST INCLUDED IN TOTAL</span><span id="gst-amount">$0.00</span></div>
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+    <div class="line">Coles &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VIC AU</div>
+    <div class="line">14/06/26 20:10 &nbsp;&nbsp;&nbsp;&nbsp; 39832829 &nbsp;&nbsp; NG23B1</div>
+    <div class="line">***** 6784 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MASTERCARD</div>
+    <div class="line">CREDIT ACCOUNT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DEBIT MASTERCARD</div>
+    <div class="line">APSN 0000 &nbsp; ATC 0618 &nbsp;&nbsp;&nbsp;&nbsp; A00000000041010</div>
+    <div class="flex line bold"><span>PURCHASE</span><span id="card-total">AUD$0.00</span></div>
+    <div class="line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
+    <div class="line">AUTH 013657</div>
+    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+    <div class="line">Flybuys Card NO: 27930284920194</div>
+    <div class="line">% = Taxable items</div>
+    <div class="line">Flybuys points as of yesterday: 1,454</div>
 </div>
 
 <script>
-    // Paste your NEW /exec URL here
-    const API_URL = 'PASTE_YOUR_URL_HERE';
-
-    async function loadReceiptData() {
+    const API_URL = 'PASTE_YOUR_NEW_DEPLOYED_URL_HERE';
+    async function loadData() {
         try {
-            // Using a proxy to bypass the CORS block
-            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(API_URL);
-            const response = await fetch(proxyUrl);
-            const items = await response.json();
-            
-            let container = document.getElementById('items-box');
-            container.innerHTML = '';
+            const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(API_URL));
+            const items = await res.json();
             let total = 0;
-
-            items.forEach(item => {
-                total += item.price;
-                container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>$${item.price.toFixed(2)}</span></div>`;
+            let container = document.getElementById('items-box');
+            items.forEach(i => {
+                total += i.price;
+                container.innerHTML += `<div class="flex line"><span>${i.name}</span><span>${i.price.toFixed(2)}</span></div>`;
             });
-            
             document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
-        } catch (e) {
-            document.getElementById('items-box').innerHTML = 'Error loading data.';
-            console.error(e);
-        }
+            document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('gst-amount').innerText = '$' + (total/11).toFixed(2);
+            document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
+        } catch(e) { console.error(e); }
     }
-    loadReceiptData();
+    loadData();
 </script>
 </body>
 </html>
