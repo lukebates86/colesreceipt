@@ -23,6 +23,10 @@
         padding: 10px;
     }
 
+    .receipt-scroll {
+    will-change: transform;
+    }
+
     .receipt {
         width: 100%;
         max-width: 330px;
@@ -349,7 +353,7 @@ document.querySelector(".header-bar").addEventListener("click", () => {
 
 /* Bottom bounce (header-safe) */
 let bouncing = false;
-const receipt = document.querySelector(".receipt");
+const receipt = document.getElementById("receiptScroll");
 
 document.addEventListener("scroll", () => {
     const maxScroll = document.body.scrollHeight - window.innerHeight;
