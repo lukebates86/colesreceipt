@@ -4,13 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
     <title>Tax Invoice Receipt</title>
     <style>
         * { box-sizing: border-box; }
-        body { background: #dcdcdc; font-family: 'Roboto Mono', monospace; display: flex; justify-content: center; padding: 10px; color: #000; margin: 0; min-height: 100vh; }
-        .receipt { width: 100%; max-width: 350px; background: #fff; padding: 15px 20px 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); align-self: flex-start; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin: -15px -20px 20px -20px; font-weight: 700; font-size: 16px; border-bottom: 2px solid #dcdcdc; background-color: #fff; position: sticky; top: 0; z-index: 100; }
-        .header-icon { width: 26px; height: 26px; object-fit: contain; display: block; }
+        body { 
+            background: #dcdcdc; 
+            font-family: 'Roboto Mono', monospace; 
+            display: flex; 
+            justify-content: center; 
+            padding: 10px; 
+            color: #000; 
+            margin: 0; 
+            min-height: 100vh; 
+        }
+        
+        .receipt { 
+            width: 100%; 
+            max-width: 350px; 
+            background: #fff; 
+            padding: 15px 20px 25px 20px; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.15); 
+            align-self: flex-start; 
+        }
+        
+        /* Sticky Header Bar configuration spanning side-to-side */
+        .header-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            margin: -15px -20px 20px -20px; 
+            font-weight: 700; 
+            font-size: 16px; 
+            border-bottom: 2px solid #dcdcdc; 
+            background-color: #fff; 
+            position: -webkit-sticky; /* Safari support */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-icon { 
+            width: 26px; 
+            height: 26px; 
+            object-fit: contain; 
+            display: block;
+        }
+
         .logo { font-size: 38px; font-weight: 700; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -2px; }
         .text-center { text-align: center; }
         .flex { display: flex; justify-content: space-between; gap: 10px; }
@@ -18,8 +59,23 @@
         .hr { border-bottom: 2px solid #000; margin: 10px 0; }
         .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
         .bold { font-weight: 700; } 
-        .barcode-container { text-align: center; margin-top: 30px; margin-bottom: 10px; }
-        .barcode-img { width: 100%; max-width: 250px; height: auto; object-fit: contain; }
+        
+        .barcode-container { 
+            text-align: center; 
+            margin-top: 30px; 
+            margin-bottom: 10px; 
+        }
+        .barcode-img { 
+            width: 100%; 
+            max-width: 250px; 
+            height: auto; 
+            object-fit: contain; 
+        }
+        
+        @media (max-width: 400px) { 
+            body { padding: 0; background: #fff; } 
+            .receipt { box-shadow: none; max-width: 100%; } 
+        }
     </style>
 </head>
 <body>
@@ -28,7 +84,7 @@
     <div class="header-bar">
         <img src="Share.png" alt="Share" class="header-icon">
         <span>Digital Receipt</span>
-        <img src="Close.png" alt="Close" class="header-icon">
+        <img src="close.png" alt="Close" class="header-icon">
     </div>
 
     <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
@@ -47,7 +103,7 @@
     <div class="hr-dashed"></div>
 
     <div id="items-box">
-        <div class="line text-center">Loading items...</div>
+        <div class="line text-center" style="color: #666;">Loading items...</div>
     </div>
 
     <div class="hr-dashed"></div>
@@ -87,18 +143,51 @@
         const now = new Date();
         document.getElementById('date').innerText = now.toLocaleDateString('en-AU');
         document.getElementById('date2').innerText = now.toLocaleDateString('en-AU', {day:'2-digit', month:'2-digit', year:'2-digit'});
-        document.getElementById('time').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
-        document.getElementById('time2').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+        document.getElementById('time').innerText = timeString;
+        document.getElementById('time2').innerText = timeString;
     }
 
     async function loadData() {
         try {
             const res = await fetch(API_URL);
             const data = await res.json();
-            let total = 0, container = document.getElementById('items-box');
+            
+            let container = document.getElementById('items-box');
             container.innerHTML = '';
             
+            // Explicitly verify the structure is an array before processing loop
+            if (!Array.isArray(data)) {
+                container.innerHTML = '<div class="line text-center" style="color: red;">Error: Invalid response structure.</div>';
+                return;
+            }
+            
+            let total = 0;
+            let count = 0;
+            
             data.forEach(item => {
+                let p = parseFloat(item.price) || 0;
+                total += p;
+                count++;
+                container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${p.toFixed(2)}</span></div>`;
+            });
+            
+            document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
+            document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
+            document.getElementById('item-count-label').innerText = `Total for ${count} item${count === 1 ? '' : 's'}:`;
+        } catch(e) { 
+            console.error(e);
+            document.getElementById('items-box').innerHTML = '<div class="line text-center" style="color: red;">Connection Error</div>';
+        }
+    }
+
+    updateDateTime();
+    loadData();
+</script>
+</body>
+</html>
                 let p = parseFloat(item.price) || 0;
                 total += p;
                 container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${p.toFixed(2)}</span></div>`;
