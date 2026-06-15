@@ -23,39 +23,98 @@
     </style>
 </head>
 <body>
+
 <div class="receipt">
     <div class="header-bar">
         <img src="Share.png" alt="Share" class="header-icon">
         <span>Digital Receipt</span>
         <img src="close.png" alt="Close" class="header-icon">
     </div>
+
     <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
     <div class="logo">coles</div>
+    
+    <div class="line">Store: 7723 - CS SSC</div>
+    <div class="line">Store Manager: Alan Yee</div>
+    <div class="line">Phone: (03) 9922 4300</div>
+    <div class="line">Served By: Assisted Checkout</div>
+    <div class="flex line"><span>Register: 111</span><span>Receipt: 493021</span></div>
+    <div class="flex line"><span>Date: <span id="date"></span></span><span>Time: <span id="time"></span></span></div>
+    
     <div class="hr"></div>
     <div class="flex line"><span class="bold">Description</span><span class="bold">$</span></div>
     <div class="hr-dashed"></div>
-    <div id="items-box"></div>
+
+    <div id="items-box">
+        <div class="line text-center">Loading items...</div>
+    </div>
+
     <div class="hr-dashed"></div>
-    <div class="flex line bold"><span id="item-count-label">Total:</span><span id="total-amount">$0.00</span></div>
-    <div class="barcode-container"><img src="barcode.png" alt="Barcode" class="barcode-img"></div>
+    
+    <div class="flex line bold"><span id="item-count-label">Total items:</span><span id="total-amount">$0.00</span></div>
+    <br>
+    <div class="flex line"><span>EFT</span><span id="eft-amount">$0.00</span></div>
+    <div class="flex line bold"><span>GST INCLUDED IN TOTAL</span><span id="gst-amount">$0.00</span></div>
+    
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+    
+    <div class="flex line"><span>Coles</span><span>VIC AU</span></div>
+    <div class="flex line"><span><span id="date2"></span> <span id="time2"></span></span><span>39832829 &nbsp; NG23B1</span></div>
+    <div class="flex line"><span>***** 6784</span><span>MASTERCARD</span></div>
+    <div class="flex line"><span>CREDIT ACCOUNT</span><span>DEBIT MASTERCARD</span></div>
+    <div class="flex line"><span>APSN 0000 &nbsp; ATC 0618</span><span>A00000000041010</span></div>
+    <div class="flex line bold"><span>PURCHASE</span><span id="card-total">AUD$0.00</span></div>
+    <div class="line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
+    <div class="line">AUTH 013657</div>
+    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+    
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+    
+    <div class="line">Flybuys Card NO: 27930284920194</div>
+    <div class="line">% = Taxable items</div>
+    <div class="line">Flybuys points as of yesterday: 1,454</div>
+
+    <div class="barcode-container">
+        <img src="barcode.png" alt="Barcode" class="barcode-img">
+    </div>
 </div>
+
 <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
+
+    function updateDateTime() {
+        const now = new Date();
+        document.getElementById('date').innerText = now.toLocaleDateString('en-AU');
+        document.getElementById('date2').innerText = now.toLocaleDateString('en-AU', {day:'2-digit', month:'2-digit', year:'2-digit'});
+        document.getElementById('time').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+        document.getElementById('time2').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: false});
+    }
+
     async function loadData() {
         try {
             const res = await fetch(API_URL);
             const data = await res.json();
             let total = 0, container = document.getElementById('items-box');
             container.innerHTML = '';
+            
             data.forEach(item => {
-                let p = parseFloat(item.price);
+                let p = parseFloat(item.price) || 0;
                 total += p;
                 container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${p.toFixed(2)}</span></div>`;
             });
+            
             document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+            document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
+            document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
             document.getElementById('item-count-label').innerText = `Total for ${data.length} items:`;
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e);
+            document.getElementById('items-box').innerHTML = '<div class="line text-center" style="color:red;">Error loading items</div>';
+        }
     }
+    updateDateTime();
     loadData();
 </script>
 </body>
