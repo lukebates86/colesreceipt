@@ -5,120 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tax Invoice Receipt</title>
 
-<!-- CHANGED: use Roboto (sans-serif) instead of Roboto Mono -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
     body {
-    background: #dcdcdc;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-}
+        background: #dcdcdc;
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+    }
 
-.receipt {
-    width: 100%;
-    max-width: 330px;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.15);
-}
+    .receipt {
+        width: 100%;
+        max-width: 330px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    }
 
-.line {
-    font-size: 13px;
-    line-height: 1.15;
-    letter-spacing: 0.15px;
-    margin: 3px 0;
-}
+    .line {
+        font-size: 13px;
+        line-height: 1.15;
+        letter-spacing: 0.15px;
+        margin: 3px 0;
+    }
 
-.flex {
-    display: flex;
-    justify-content: space-between;
-}
+    .flex {
+        display: flex;
+        justify-content: space-between;
+    }
 
-.flex span:first-child {
-    flex: 1;
-    padding-right: 10px;
-    word-break: break-word;
-}
+    .flex span:first-child {
+        flex: 1;
+        padding-right: 10px;
+        word-break: break-word;
+    }
 
-.flex span:last-child {
-    min-width: 50px;
-    text-align: right;
-}
+    .flex span:last-child {
+        min-width: 50px;
+        text-align: right;
+    }
 
-.hr {
-    border-bottom: 2px solid #000;
-    margin: 12px 0;
-}
+    .hr {
+        border-bottom: 2px solid #000;
+        margin: 12px 0;
+    }
 
-.hr-dashed {
-    border-bottom: 1px dashed #000;
-    margin: 12px 0;
-}
+    .hr-dashed {
+        border-bottom: 1px dashed #000;
+        margin: 12px 0;
+    }
 
-.barcode-img {
-    width: 100%;
-    max-width: 160px;
-    margin: 15px auto 0;
-    display: block;
-    filter: grayscale(100%);
-    opacity: 0.75;
-}
+    .barcode-img {
+        width: 100%;
+        max-width: 160px;
+        margin: 15px auto 0;
+        display: block;
+        filter: grayscale(100%);
+        opacity: 0.75;
+    }
 
-.logo {
-    font-size: 38px;
-    font-weight: 700;
-    text-align: center;
-    color: #e31837;
-    margin: 6px 0 14px 0;
-    letter-spacing: -2px;
-}
+    .logo {
+        font-size: 38px;
+        font-weight: 700;
+        text-align: center;
+        color: #e31837;
+        margin: 6px 0 14px 0;
+        letter-spacing: -2px;
+    }
 
-.text-center {
-    text-align: center;
-}
+    .text-center {
+        text-align: center;
+    }
 
-.header-bar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: #fff;
-    padding: 15px 20px;
-    margin: -20px -20px 20px -20px;
-    border-bottom: 2px solid #dcdcdc;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-}
+    .header-bar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #fff;
+        padding: 15px 20px;
+        margin: -20px -20px 20px -20px;
+        border-bottom: 2px solid #dcdcdc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
 
-.header-icon {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-    display: block;
-}
+    .header-icon {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+    }
 
-/* ===== TOTALS BLOCK UPDATE ===== */
+    /* ===== TOTALS BLOCK ===== */
+    .totals-subtotal {
+        font-weight: 400;
+    }
 
-.totals-subtotal {
-    font-weight: 400; /* normal */
-}
+    .totals-gst {
+        font-weight: 600;
+    }
 
-.totals-gst {
-    font-weight: 600; /* slightly bold */
-}
-
-.totals-total {
-    font-weight: 700; /* boldest */
-    font-size: 14px;  /* slightly larger */
-    margin-top: 4px;  /* subtle spacing above */
-}
-
+    .totals-total {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
+    }
 </style>
 </head>
 
@@ -161,24 +158,24 @@
 
     <div class="hr-dashed"></div>
 
-    <div class="flex line">
+    <!-- UPDATED TOTALS BLOCK -->
+    <div class="flex line totals-subtotal">
         <span>SUBTOTAL</span>
         <span id="subtotal-amount">$0.00</span>
     </div>
 
-    <div class="flex line" style="font-weight:700;">
+    <div class="flex line totals-gst">
         <span>GST INCLUDED</span>
         <span id="gst-amount">$0.00</span>
     </div>
 
-    <div class="flex line" style="font-weight:700;">
+    <div class="flex line totals-total">
         <span>TOTAL</span>
         <span id="total-amount">$0.00</span>
     </div>
 
     <br>
 
-    <!-- EFTPOS / card section – Coles exact replica -->
     <div class="flex line">
         <span>EFT</span>
         <span id="eft-amount">$0.00</span>
