@@ -8,71 +8,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-    /* ===== DIGITAL RECEIPT STYLE UPDATE ===== */
+   /* ===== COLES DIGITAL RECEIPT STYLE (REFINED) ===== */
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: #fff;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #ffffff;
   color: #222;
   margin: 0;
   padding: 0;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .receipt {
-  width: 375px;
+  width: 360px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 0;
   box-sizing: border-box;
 }
 
-/* Header bar */
-.header-bar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: #fff;
-  padding: 15px 20px;
-  border-bottom: 2px solid #eaeaea;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-}
-
-/* Coles logo text */
-.header-bar .logo {
-  color: #e00000;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  font-size: 22px;
-}
-
-/* Store info block */
-.store-info {
-  font-size: 12px;
-  color: #555;
+/* Header */
+.header {
+  text-align: center;
   margin-bottom: 10px;
 }
-.store-info small {
+.header .logo {
+  color: #e00000;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: -0.3px;
+}
+.header small {
   display: block;
   font-size: 11px;
   color: #666;
+}
+
+/* Store info */
+.store-info {
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 12px;
 }
 
 /* Item list */
 .item-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  padding: 6px 0;
+  padding: 4px 0;
+  font-size: 13px;
   border-bottom: 1px dotted #ddd;
 }
 .item-name {
-  font-weight: 500;
+  flex: 1;
 }
 .item-price {
   text-align: right;
+  min-width: 60px;
 }
 
 /* Discount line */
@@ -80,31 +72,41 @@ body {
   text-align: right;
   color: #444;
   font-style: italic;
+  font-size: 13px;
   margin-top: 4px;
 }
 
 /* Totals block */
 .totals {
   margin-top: 10px;
-  padding: 8px 0;
-  border-top: 2px solid #eaeaea;
+  font-size: 13px;
 }
 .totals .label {
   font-weight: 600;
 }
 .totals .total {
-  background: #f8f8f8;
   font-weight: 700;
+  background: #f9f9f9;
   padding: 4px 0;
+  border-top: 2px solid #eaeaea;
 }
 
-/* Barcode area */
+/* Payment details */
+.payment-info {
+  font-size: 12px;
+  color: #333;
+  margin-top: 10px;
+  line-height: 1.3;
+  font-family: "Courier New", monospace;
+}
+
+/* Barcode */
 .barcode {
-  margin-top: 15px;
   text-align: center;
+  margin-top: 15px;
 }
 .barcode img {
-  width: 180px;
+  width: 160px;
   height: auto;
 }
 .barcode small {
@@ -115,9 +117,9 @@ body {
 
 /* Footer */
 .footer {
+  text-align: center;
   font-size: 11px;
   color: #777;
-  text-align: center;
   margin-top: 12px;
 }
 
