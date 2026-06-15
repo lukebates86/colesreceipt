@@ -1,293 +1,291 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tax Invoice Receipt</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            background: #dcdcdc;
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            padding: 10px;
-        }
-    
-        .receipt {
-            width: 100%;
-            max-width: 330px;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.15);
-            position: relative;
-            overflow: hidden;
-        }
-    
-        .line {
-            font-size: 13px;
-            line-height: 1.15;
-            letter-spacing: 0.15px;
-            margin: 3px 0;
-        }
-    
-        .flex {
-            display: flex;
-            justify-content: space-between;
-        }
-    
-        .flex span:first-child {
-            flex: 1;
-            padding-right: 10px;
-            word-break: break-word;
-        }
-    
-        .flex span:last-child {
-            min-width: 50px;
-            text-align: right;
-        }
-    
-        .hr {
-            border-bottom: 2px solid #000;
-            margin: 12px 0;
-        }
-    
-        .hr-dashed {
-            border-bottom: 1px dashed #000;
-            margin: 12px 0;
-        }
-    
-        .barcode-img {
-            width: 100%;
-            max-width: 160px;
-            margin: 22px auto 6px;
-            display: block;
-            filter: grayscale(100%);
-            opacity: 0.75;
-        }
-    
-        .logo {
-            font-size: 38px;
-            font-weight: 700;
-            text-align: center;
-            color: #e31837;
-            margin: 6px 0 14px 0;
-            letter-spacing: -2px;
-        }
-    
-        .text-center {
-            text-align: center;
-        }
-    
-        .header-bar {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: #fff;
-            padding: 15px 20px;
-            margin: -20px -20px 20px -20px;
-            border-bottom: 2px solid #dcdcdc;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-        }
-    
-        .header-icon {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            display: block;
-        }
-    
-        /* ===== SHARE ICON ANIMATION ===== */
-        .header-icon.share {
-            animation: pulseShare 1.6s ease-out 1;
-            transform-origin: center;
-        }
-    
-        @keyframes pulseShare {
-            0% { transform: scale(1); opacity: 0.6; }
-            40% { transform: scale(1.18); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-    
-        /* ===== SWIPE DOWN TO CLOSE FADE ===== */
-        .swipe-fade {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0));
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-        }
-    
-        .swipe-fade.visible {
-            opacity: 1;
-        }
-    
-        /* ===== TOTALS BLOCK ===== */
-        .totals-subtotal { font-weight: 400; }
-        .totals-gst { font-weight: 600; }
-        .totals-total {
-            font-weight: 700;
-            font-size: 14px;
-            margin-top: 4px;
-        }
-    
-        /* ===== ITEM CODE LINE ===== */
-        .item-code {
-            font-size: 11px;
-            opacity: 0.65;
-            margin-top: -1px;
-            margin-bottom: 4px;
-            padding-left: 2px;
-            letter-spacing: 0.3px;
-        }
-    
-        /* ===== MULTIBUY DISCOUNT ===== */
-        .discount-line {
-            font-style: italic;
-            color: #444;
-            font-size: 13px;
-            margin-top: 2px;
-            margin-bottom: 2px;
-        }
-    
-        /* ===== EFTPOS BLOCK ===== */
-        .eft-line {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 12px;
-            letter-spacing: 0.2px;
-        }
-    
-        /* ===== TAX NOTES ===== */
-        .tax-note {
-            margin-top: 4px;
-            margin-bottom: 2px;
-            font-size: 12px;
-            opacity: 0.85;
-            letter-spacing: 0.2px;
-        }
-    </style>
-    </head>
-    
-    <body>
-    <div class="receipt">
-    
-        <!-- Swipe fade overlay -->
-        <div class="swipe-fade" id="swipeFade"></div>
-    
-        <div class="header-bar">
-            <img src="Share.png" alt="Share" class="header-icon share">
-            <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
-            <img src="Close.png" alt="Close" class="header-icon">
-        </div>
-    
-        <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-        <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
-        <div class="logo">coles</div>
-    
-        <div class="line">Store: 7723 - CS SSC</div>
-        <div class="line">Store Manager: Alan Yee</div>
-        <div class="line">Phone: (03) 9922 4300</div>
-        <div class="line">Served By: Assisted Checkout</div>
-    
-        <div class="flex line">
-            <span>Register: 111</span>
-            <span>Receipt: 493021</span>
-        </div>
-    
-        <div class="flex line">
-            <span>Date: <span id="cur-date"></span></span>
-            <span>Time: <span id="cur-time"></span></span>
-        </div>
-    
-        <div class="hr"></div>
-        <div class="flex line" style="font-weight:700;">
-            <span>Description</span>
-            <span>$</span>
-        </div>
-        <div class="hr-dashed"></div>
-    
-        <div id="items-box">Loading...</div>
-    
-        <div class="hr-dashed"></div>
-    
-        <div class="flex line totals-subtotal">
-            <span>SUBTOTAL</span>
-            <span id="subtotal-amount">$0.00</span>
-        </div>
-    
-        <div class="flex line totals-gst">
-            <span>GST INCLUDED</span>
-            <span id="gst-amount">$0.00</span>
-        </div>
-    
-        <div class="flex line totals-total">
-            <span>TOTAL</span>
-            <span id="total-amount">$0.00</span>
-        </div>
-    
-        <br>
-    
-        <div class="flex line">
-            <span>EFT</span>
-            <span id="eft-amount">$0.00</span>
-        </div>
-        <div class="flex line" style="font-weight:700;">
-            <span>GST INCLUDED IN TOTAL</span>
-            <span id="gst-total-amount">$0.00</span>
-        </div>
-    
-        <div class="hr-dashed" style="margin: 20px 0;"></div>
-    
-        <div class="flex line eft-line">
-            <span>Coles</span>
-            <span>VIC AU</span>
-        </div>
-        <div class="flex line eft-line">
-            <span><span id="cur-date2"></span> <span id="cur-time2"></span></span>
-            <span>39832829 &nbsp; NG23B1</span>
-        </div>
-        <div class="flex line eft-line">
-            <span>***** 6784</span>
-            <span>MASTERCARD</span>
-        </div>
-        <div class="flex line eft-line">
-            <span>CREDIT ACCOUNT</span>
-            <span>DEBIT MASTERCARD</span>
-        </div>
-        <div class="flex line eft-line">
-            <span>APSN 0000 &nbsp; ATC 0618</span>
-            <span>A00000000041010</span>
-        </div>
-        <div class="flex line eft-line" style="font-weight:700;">
-            <span>PURCHASE</span>
-            <span id="card-total">$0.00</span>
-        </div>
-        <div class="line eft-line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
-        <div class="line eft-line">AUTH 013657</div>
-        <div class="line eft-line">NO PIN OR SIGNATURE REQUIRED</div>
-    
-        <div class="hr-dashed" style="margin: 20px 0;"></div>
-    
-        <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
-        <div class="line tax-note">% = Taxable items</div>
-        <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
-    
-        <img id="barcode" class="barcode-img" alt="Barcode">
-    
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Receipt</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background: #dcdcdc;
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .receipt {
+        width: 100%;
+        max-width: 330px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .line {
+        font-size: 13px;
+        line-height: 1.15;
+        letter-spacing: 0.15px;
+        margin: 3px 0;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .flex span:first-child {
+        flex: 1;
+        padding-right: 10px;
+        word-break: break-word;
+    }
+
+    .flex span:last-child {
+        min-width: 50px;
+        text-align: right;
+    }
+
+    .hr {
+        border-bottom: 2px solid #000;
+        margin: 12px 0;
+    }
+
+    .hr-dashed {
+        border-bottom: 1px dashed #000;
+        margin: 12px 0;
+    }
+
+    .barcode-img {
+        width: 100%;
+        max-width: 160px;
+        margin: 22px auto 6px;
+        display: block;
+        filter: grayscale(100%);
+        opacity: 0.75;
+    }
+
+    .logo {
+        font-size: 38px;
+        font-weight: 700;
+        text-align: center;
+        color: #e31837;
+        margin: 6px 0 14px 0;
+        letter-spacing: -2px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .header-bar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #fff;
+        padding: 15px 20px;
+        margin: -20px -20px 20px -20px;
+        border-bottom: 2px solid #dcdcdc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
+
+    .header-icon {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .header-icon.share {
+        animation: pulseShare 1.6s ease-out 1;
+        transform-origin: center;
+    }
+
+    @keyframes pulseShare {
+        0% { transform: scale(1); opacity: 0.6; }
+        40% { transform: scale(1.18); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .swipe-fade {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0));
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+
+    .swipe-fade.visible {
+        opacity: 1;
+    }
+
+    .totals-subtotal { font-weight: 400; }
+    .totals-gst { font-weight: 600; }
+    .totals-total {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .item-code {
+        font-size: 11px;
+        opacity: 0.65;
+        margin-top: -1px;
+        margin-bottom: 4px;
+        padding-left: 2px;
+        letter-spacing: 0.3px;
+    }
+
+    .discount-line {
+        font-style: italic;
+        color: #444;
+        font-size: 13px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    .eft-line {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+    }
+
+    .tax-note {
+        margin-top: 4px;
+        margin-bottom: 2px;
+        font-size: 12px;
+        opacity: 0.85;
+        letter-spacing: 0.2px;
+    }
+</style>
+</head>
+
+<body>
+<div class="receipt">
+
+    <div class="swipe-fade" id="swipeFade"></div>
+
+    <div class="header-bar">
+        <img src="Share.png" alt="Share" class="header-icon share">
+        <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
+        <img src="Close.png" alt="Close" class="header-icon">
     </div>
-    
-    <script>
+
+    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    <div class="logo">coles</div>
+
+    <div class="line">Store: 7723 - CS SSC</div>
+    <div class="line">Store Manager: Alan Yee</div>
+    <div class="line">Phone: (03) 9922 4300</div>
+    <div class="line">Served By: Assisted Checkout</div>
+
+    <div class="flex line">
+        <span>Register: 111</span>
+        <span>Receipt: 493021</span>
+    </div>
+
+    <div class="flex line">
+        <span>Date: <span id="cur-date"></span></span>
+        <span>Time: <span id="cur-time"></span></span>
+    </div>
+
+    <div class="hr"></div>
+    <div class="flex line" style="font-weight:700;">
+        <span>Description</span>
+        <span>$</span>
+    </div>
+    <div class="hr-dashed"></div>
+
+    <div id="items-box">Loading...</div>
+
+    <div class="hr-dashed"></div>
+
+    <div class="flex line totals-subtotal">
+        <span>SUBTOTAL</span>
+        <span id="subtotal-amount">$0.00</span>
+    </div>
+
+    <div class="flex line totals-gst">
+        <span>GST INCLUDED</span>
+        <span id="gst-amount">$0.00</span>
+    </div>
+
+    <div class="flex line totals-total">
+        <span>TOTAL</span>
+        <span id="total-amount">$0.00</span>
+    </div>
+
+    <br>
+
+    <div class="flex line">
+        <span>EFT</span>
+        <span id="eft-amount">$0.00</span>
+    </div>
+    <div class="flex line" style="font-weight:700;">
+        <span>GST INCLUDED IN TOTAL</span>
+        <span id="gst-total-amount">$0.00</span>
+    </div>
+
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+
+    <div class="flex line eft-line">
+        <span>Coles</span>
+        <span>VIC AU</span>
+    </div>
+    <div class="flex line eft-line">
+        <span><span id="cur-date2"></span> <span id="cur-time2"></span></span>
+        <span>39832829 &nbsp; NG23B1</span>
+    </div>
+    <div class="flex line eft-line">
+        <span>***** 6784</span>
+        <span>MASTERCARD</span>
+    </div>
+    <div class="flex line eft-line">
+        <span>CREDIT ACCOUNT</span>
+        <span>DEBIT MASTERCARD</span>
+    </div>
+    <div class="flex line eft-line">
+        <span>APSN 0000 &nbsp; ATC 0618</span>
+        <span>A00000000041010</span>
+    </div>
+    <div class="flex line eft-line" style="font-weight:700;">
+        <span>PURCHASE</span>
+        <span id="card-total">$0.00</span>
+    </div>
+    <div class="line eft-line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
+    <div class="line eft-line">AUTH 013657</div>
+    <div class="line eft-line">NO PIN OR SIGNATURE REQUIRED</div>
+
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+
+    <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
+    <div class="line tax-note">% = Taxable items</div>
+    <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
+
+    <img id="barcode" class="barcode-img" alt="Barcode">
+
+</div>
+
+<script>
 /* Timestamp logic */
 function updateTimestamp() {
     const now = new Date();
@@ -325,7 +323,7 @@ document.addEventListener("scroll", () => {
     lastScroll = current;
 });
 
-/* ===== SMOOTH SCROLL-TO-TOP SNAP ===== */
+/* Smooth scroll-to-top snap */
 let scrollTimeout;
 document.addEventListener("scroll", () => {
     clearTimeout(scrollTimeout);
@@ -340,7 +338,15 @@ document.addEventListener("scroll", () => {
     }, 120);
 });
 
-/* ===== NATIVE-FEELING BOTTOM BOUNCE (HEADER-SAFE VERSION) ===== */
+/* Tap header to scroll to top */
+document.querySelector(".header-bar").addEventListener("click", () => {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+});
+
+/* Bottom bounce (header-safe) */
 let bouncing = false;
 const receipt = document.querySelector(".receipt");
 
@@ -361,6 +367,80 @@ document.addEventListener("scroll", () => {
             }, 250);
         }, 120);
     }
+});
+
+/* Overscroll glow (top only) */
+const glow = document.createElement("div");
+glow.style.position = "fixed";
+glow.style.top = "0";
+glow.style.left = "0";
+glow.style.width = "100%";
+glow.style.height = "60px";
+glow.style.pointerEvents = "none";
+glow.style.background = "radial-gradient(ellipse at top, rgba(255,255,255,0.55), rgba(255,255,255,0))";
+glow.style.opacity = "0";
+glow.style.transition = "opacity 0.2s ease-out";
+document.body.appendChild(glow);
+
+document.addEventListener("scroll", () => {
+    if (window.scrollY <= 0) {
+        glow.style.opacity = "1";
+        setTimeout(() => glow.style.opacity = "0", 180);
+    }
+});
+
+/* Momentum scroll easing (simulated) */
+let momentum = 0;
+let isScrolling = false;
+
+function momentumLoop() {
+    if (Math.abs(momentum) > 0.1) {
+        window.scrollBy(0, momentum);
+        momentum *= 0.92;
+        requestAnimationFrame(momentumLoop);
+    } else {
+        isScrolling = false;
+    }
+}
+
+document.addEventListener("wheel", (e) => {
+    momentum = e.deltaY * 0.25;
+    if (!isScrolling) {
+        isScrolling = true;
+        requestAnimationFrame(momentumLoop);
+    }
+});
+
+/* iOS-style rubber-band top stretch */
+let pulling = false;
+let startY = 0;
+
+document.addEventListener("touchstart", (e) => {
+    if (window.scrollY === 0) {
+        pulling = true;
+        startY = e.touches[0].clientY;
+    }
+});
+
+document.addEventListener("touchmove", (e) => {
+    if (!pulling) return;
+
+    const diff = e.touches[0].clientY - startY;
+    if (diff > 0) {
+        receipt.style.transform = `translateY(${diff * 0.35}px)`;
+    }
+});
+
+document.addEventListener("touchend", () => {
+    if (!pulling) return;
+    pulling = false;
+
+    receipt.style.transition = "transform 0.25s ease-out";
+    receipt.style.transform = "translateY(0)";
+
+    setTimeout(() => {
+        receipt.style.transition = "";
+    }, 250);
 });
 
 /* Multibuy logic */
@@ -453,7 +533,13 @@ async function loadData() {
 }
 
 loadData();
+
+/* PWA: register service worker */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+    });
+}
 </script>
-    
-    </body>
-    </html>
+</body>
+</html>
