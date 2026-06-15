@@ -1,108 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kmart Digital Receipt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Receipt</title>
 
-  <style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
     body {
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-      font-family: 'Inter', sans-serif;
+        background: #dcdcdc;
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
     }
 
     .receipt {
-      max-width: 480px;
-      margin: 0 auto;
-      background: white;
-      padding-bottom: 40px;
-      min-height: 100vh;
+        width: 100%;
+        max-width: 330px;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .line {
+        font-size: 13px;
+        line-height: 1.15;
+        letter-spacing: 0.15px;
+        margin: 3px 0;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .flex span:first-child {
+        flex: 1;
+        padding-right: 10px;
+        word-break: break-word;
+    }
+
+    .flex span:last-child {
+        min-width: 50px;
+        text-align: right;
+    }
+
+    .hr {
+        border-bottom: 2px solid #000;
+        margin: 12px 0;
+    }
+
+    .hr-dashed {
+        border-bottom: 1px dashed #000;
+        margin: 12px 0;
+    }
+
+    .barcode-img {
+        width: 100%;
+        max-width: 160px;
+        margin: 22px auto 6px;
+        display: block;
+        filter: grayscale(100%);
+        opacity: 0.75;
+    }
+
+    .logo {
+        font-size: 38px;
+        font-weight: 700;
+        text-align: center;
+        color: #e31837;
+        margin: 6px 0 14px 0;
+        letter-spacing: -2px;
+    }
+
+    .text-center {
+        text-align: center;
     }
 
     .header-bar {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: white;
-      padding: 12px 16px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #fff;
+        padding: 15px 20px;
+        margin: -20px -20px 20px -20px;
+        border-bottom: 2px solid #dcdcdc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
     }
 
-    .header-title {
-      font-weight: 600;
-      font-size: 18px;
+    .header-icon {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+        cursor: pointer;
     }
 
-    .header-close {
-      font-size: 20px;
-      cursor: pointer;
+    .header-icon.share {
+        animation: pulseShare 1.6s ease-out 1;
+        transform-origin: center;
+    }
+
+    @keyframes pulseShare {
+        0% { transform: scale(1); opacity: 0.6; }
+        40% { transform: scale(1.18); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
     }
 
     .swipe-fade {
-      height: 12px;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0));
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0));
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
     }
 
-    .section {
-      padding: 16px;
-      border-bottom: 1px solid #eee;
+    .swipe-fade.visible {
+        opacity: 1;
     }
 
-    .section-title {
-      font-weight: 600;
-      margin-bottom: 8px;
+    .totals-subtotal { font-weight: 400; }
+    .totals-gst { font-weight: 600; }
+    .totals-total {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
     }
 
-    .item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
+    .item-code {
+        font-size: 11px;
+        opacity: 0.65;
+        margin-top: -1px;
+        margin-bottom: 4px;
+        padding-left: 2px;
+        letter-spacing: 0.3px;
     }
 
-    .total {
-      font-weight: 700;
-      font-size: 18px;
-      margin-top: 10px;
+    .discount-line {
+        font-style: italic;
+        color: #444;
+        font-size: 13px;
+        margin-top: 2px;
+        margin-bottom: 2px;
     }
-  </style>
+
+    .eft-line {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+    }
+
+    .tax-note {
+        margin-top: 4px;
+        margin-bottom: 2px;
+        font-size: 12px;
+        opacity: 0.85;
+        letter-spacing: 0.2px;
+    }
+</style>
 </head>
 
 <body>
+<div class="receipt">
 
-  <div class="receipt">
-
-    <div class="swipe-fade"></div>
+    <div class="swipe-fade" id="swipeFade"></div>
 
     <div class="header-bar">
-      <div class="header-title">Kmart Digital Receipt</div>
-      <div class="header-close">✕</div>
+        <img src="Share.png" alt="Share" class="header-icon share">
+        <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
+        <img src="Close.png" alt="Close" class="header-icon">
     </div>
 
-    <!-- All receipt content now lives directly under .receipt -->
-    <div class="section">
-      <div class="section-title">Order Summary</div>
-      <div class="item"><span>Item A</span><span>$10.00</span></div>
-      <div class="item"><span>Item B</span><span>$5.00</span></div>
-      <div class="total">Total: $15.00</div>
+    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    <div class="logo">coles</div>
+
+    <div class="line">Store: 7723 - CS SSC</div>
+    <div class="line">Store Manager: Alan Yee</div>
+    <div class="line">Phone: (03) 9922 4300</div>
+    <div class="line">Served By: Assisted Checkout</div>
+
+    <div class="flex line">
+        <span>Register: 111</span>
+        <span>Receipt: 493021</span>
     </div>
 
-    <div class="section">
-      <div class="section-title">Payment</div>
-      <div class="item"><span>Card</span><span>•••• 1234</span></div>
+    <div class="flex line">
+        <span>Date: <span id="cur-date"></span></span>
+        <span>Time: <span id="cur-time"></span></span>
     </div>
 
-    <div class="section">
-      <div class="section-title">Store Details</div>
-      <div>Kmart Werribee</div>
-      <div>123 Example St</div>
+    <div class="hr"></div>
+    <div class="flex line" style="font-weight:700;">
+        <span>Description</span>
+        <span>$</span>
+    </div>
+    <div class="hr-dashed"></div>
+
+    <div id="items-box">Loading...</div>
+
+    <div class="hr-dashed"></div>
+
+    <div class="flex line totals-subtotal">
+        <span>SUBTOTAL</span>
+        <span id="subtotal-amount">$0.00</span>
     </div>
 
-  </div>
+    <div class="flex line totals-gst">
+        <span>GST INCLUDED</span>
+        <span id="gst-amount">$0.00</span>
+    </div>
+
+    <div class="flex line totals-total">
+        <span>TOTAL</span>
+        <span id="total-amount">$0.00</span>
+    </div>
+
+    <br>
+
+    <div class="flex line">
+        <span>EFT</span>
+        <span id="eft-amount">$0.00</span>
+    </div>
+    <div class="flex line" style="font-weight:700;">
+        <span>GST INCLUDED IN TOTAL</span>
+        <span id="gst-total-amount">$0.00</span>
+    </div>
+
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+
+    <div class="flex line eft-line">
+        <span>Coles</span>
+        <span>VIC AU</span>
+    </div>
+    <div class="flex line eft-line">
+        <span><span id="cur-date2"></span> <span id="cur-time2"></span></span>
+        <span>39832829 &nbsp; NG23B1</span>
+    </div>
+    <div class="flex line eft-line">
+        <span>***** 6784</span>
+        <span>MASTERCARD</span>
+    </div>
+    <div class="flex line eft-line">
+        <span>CREDIT ACCOUNT</span>
+        <span>DEBIT MASTERCARD</span>
+    </div>
+    <div class="flex line eft-line">
+        <span>APSN 0000 &nbsp; ATC 0618</span>
+        <span>A00000000041010</span>
+    </div>
+    <div class="flex line eft-line" style="font-weight:700;">
+        <span>PURCHASE</span>
+        <span id="card-total">$0.00</span>
+    </div>
+    <div class="line eft-line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
+    <div class="line eft-line">AUTH 013657</div>
+    <div class="line eft-line">NO PIN OR SIGNATURE REQUIRED</div>
+
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+
+    <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
+    <div class="line tax-note">% = Taxable items</div>
+    <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
+
+    <img id="barcode" class="barcode-img" alt="Barcode">
+
+</div>
 
 <script>
 /* Timestamp logic */
@@ -165,8 +347,7 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     });
 });
 
-/* SIMPLE BOTTOM BOUNCE — REMOVED (it used transform and broke sticky) */
-/*
+/* Simple bottom bounce (header-safe) */
 let bouncing = false;
 const receiptEl = document.querySelector(".receipt");
 
@@ -188,7 +369,6 @@ document.addEventListener("scroll", () => {
         }, 100);
     }
 });
-*/
 
 /* Multibuy logic */
 function detectMultibuy(items) {
@@ -288,6 +468,5 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
-
 </body>
 </html>
