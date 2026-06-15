@@ -60,27 +60,34 @@
 
     .barcode-img {
         width: 100%;
-        max-width: 250px;
-        margin: 20px auto 0;
+        max-width: 160px;
+        margin: 15px auto 0;
         display: block;
         filter: grayscale(100%);
+        opacity: 0.75;
     }
 
-    .barcode-img {
-    max-width: 180px;
-    margin-top: 10px;
-    opacity: 0.8;
-}
+    .logo {
+        font-size: 38px;
+        font-weight: 700;
+        text-align: center;
+        color: #e31837;
+        margin: 6px 0 14px 0;
+        letter-spacing: -2px;
+    }
 
+    .text-center {
+        text-align: center;
+    }
 </style>
 </head>
 
 <body>
 <div class="receipt">
 
-    <div class="line" style="text-align:center;">Coles Supermarkets Australia Pty Ltd</div>
-    <div class="line" style="text-align:center;">Tax Invoice ABN: 45 004 189 708</div>
-    <div class="line" style="font-size:38px; text-align:center; color:#e31837; font-weight:700;">coles</div>
+    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    <div class="logo">coles</div>
 
     <div class="line">Store: 7723 - CS SSC</div>
     <div class="line">Store Manager: Alan Yee</div>
@@ -123,7 +130,53 @@
         <span id="total-amount">$0.00</span>
     </div>
 
-    <div class="hr-dashed"></div>
+    <br>
+
+    <!-- EFTPOS / card section – Coles exact replica -->
+    <div class="flex line">
+        <span>EFT</span>
+        <span id="eft-amount">$0.00</span>
+    </div>
+    <div class="flex line" style="font-weight:700;">
+        <span>GST INCLUDED IN TOTAL</span>
+        <span id="gst-total-amount">$0.00</span>
+    </div>
+
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+
+    <div class="flex line">
+        <span>Coles</span>
+        <span>VIC AU</span>
+    </div>
+    <div class="flex line">
+        <span><span id="cur-date2"></span> <span id="cur-time2"></span></span>
+        <span>39832829 &nbsp; NG23B1</span>
+    </div>
+    <div class="flex line">
+        <span>***** 6784</span>
+        <span>MASTERCARD</span>
+    </div>
+    <div class="flex line">
+        <span>CREDIT ACCOUNT</span>
+        <span>DEBIT MASTERCARD</span>
+    </div>
+    <div class="flex line">
+        <span>APSN 0000 &nbsp; ATC 0618</span>
+        <span>A00000000041010</span>
+    </div>
+    <div class="flex line" style="font-weight:700;">
+        <span>PURCHASE</span>
+        <span id="card-total">$0.00</span>
+    </div>
+    <div class="line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
+    <div class="line">AUTH 013657</div>
+    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+
+    <div class="hr-dashed" style="margin: 20px 0;"></div>
+
+    <div class="line">Flybuys Card NO: 27930284920194</div>
+    <div class="line">% = Taxable items</div>
+    <div class="line">Flybuys points as of yesterday: 1,454</div>
 
     <img id="barcode" class="barcode-img" alt="Barcode">
 
@@ -132,8 +185,14 @@
 <script>
 function updateTimestamp() {
     const now = new Date();
-    document.getElementById('cur-date').innerText = now.toLocaleDateString('en-AU');
-    document.getElementById('cur-time').innerText = now.toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:false});
+    const d = now.toLocaleDateString('en-AU');
+    const dS = now.toLocaleDateString('en-AU', {day:'2-digit', month:'2-digit', year:'2-digit'});
+    const t = now.toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:false});
+
+    document.getElementById('cur-date').innerText = d;
+    document.getElementById('cur-date2').innerText = dS;
+    document.getElementById('cur-time').innerText = t;
+    document.getElementById('cur-time2').innerText = t;
 }
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
@@ -186,40 +245,50 @@ function detectMultibuy(items) {
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
-    const res = await fetch(API_URL);
-    const data = await res.json();
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
 
-    let container = document.getElementById('items-box');
-    container.innerHTML = "";
+        let container = document.getElementById('items-box');
+        container.innerHTML = "";
 
-    let total = 0;
+        let total = 0;
 
-    data.forEach(item => {
-        total += item.price;
+        data.forEach(item => {
+            total += item.price;
 
-        container.innerHTML += `
-            <div class="flex line">
-                <span>${item.name}</span>
-                <span>$${item.price.toFixed(2)}</span>
-            </div>
-            ${item.code ? `<div class="line" style="font-size:11px; opacity:0.7;">${item.code}</div>` : ""}
-        `;
-    });
+            container.innerHTML += `
+                <div class="flex line">
+                    <span>${item.name}</span>
+                    <span>$${item.price.toFixed(2)}</span>
+                </div>
+                ${item.code ? `<div class="line" style="font-size:11px; opacity:0.7;">${item.code}</div>` : ""}
+            `;
+        });
 
-    const discounts = detectMultibuy(data);
-    discounts.forEach(d => {
-        total += d.price;
-        container.innerHTML += `
-            <div class="flex line">
-                <span>${d.name}</span>
-                <span>$${d.price.toFixed(2)}</span>
-            </div>
-        `;
-    });
+        const discounts = detectMultibuy(data);
+        discounts.forEach(d => {
+            total += d.price;
+            container.innerHTML += `
+                <div class="flex line">
+                    <span>${d.name}</span>
+                    <span>$${d.price.toFixed(2)}</span>
+                </div>
+            `;
+        });
 
-    document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
-    document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
-    document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
+        document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+
+        document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('gst-total-amount').innerText = '$' + (total / 11).toFixed(2);
+        document.getElementById('card-total').innerText = '$' + total.toFixed(2);
+
+    } catch (e) {
+        document.getElementById('items-box').innerText = 'Error loading items';
+        console.error(e);
+    }
 }
 
 loadData();
