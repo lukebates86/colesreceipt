@@ -65,6 +65,13 @@
         display: block;
         filter: grayscale(100%);
     }
+
+    .barcode-img {
+    max-width: 180px;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
 </style>
 </head>
 
@@ -177,7 +184,7 @@ function detectMultibuy(items) {
 }
 
 async function loadData() {
-    const API_URL = "YOUR_WEB_APP_URL_HERE";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
     const res = await fetch(API_URL);
     const data = await res.json();
