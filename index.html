@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght=400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tax Invoice Receipt</title>
     <style>
-        body { background: #dcdcdc; font-family: 'Roboto Mono', monospace; margin: 0; display: flex; justify-content: center; min-height: 100vh; color: #000; }
+        body { background: #dcdcdc; font-family: 'Roboto Mono', monospace; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
         .receipt { width: 100%; max-width: 350px; background: #fff; padding: 15px 20px 25px 20px; box-shadow: 0 0 15px rgba(0,0,0,0.15); }
         .header-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin: -15px -20px 20px -20px; border-bottom: 2px solid #dcdcdc; background: #fff; position: sticky; top: 0; z-index: 100; font-weight: 700; }
         .logo { font-size: 38px; font-weight: 700; text-align: center; color: #e31837; margin: 5px 0 15px 0; letter-spacing: -2px; }
@@ -15,59 +14,44 @@
         .hr { border-bottom: 2px solid #000; margin: 10px 0; }
         .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
         .bold { font-weight: 700; }
-        .text-center { text-align: center; }
         .barcode-img { width: 100%; max-width: 250px; display: block; margin: 20px auto; }
     </style>
 </head>
 <body>
 <div class="receipt">
     <div class="header-bar"><span>Share</span><span>Digital Receipt</span><span>Close</span></div>
-    
-    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    <div class="line" style="text-align:center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line" style="text-align:center">Tax Invoice ABN: 45 004 189 708</div>
     <div class="logo">coles</div>
     <div class="line">Store: 7723 - CS SSC</div>
     <div class="line">Store Manager: Alan Yee</div>
-    <div class="line">Phone: (03) 9922 4300</div>
     <div class="line">Served By: Assisted Checkout</div>
     <div class="flex line"><span>Register: 111</span><span>Receipt: 493021</span></div>
-    <div class="flex line"><span>Date: 15/06/2026</span><span>Time: 19:30</span></div>
-    
+    <div class="flex line"><span>Date: <span id="cur-date"></span></span><span>Time: <span id="cur-time"></span></span></div>
     <div class="hr"></div>
     <div class="flex line bold"><span>Description</span><span>$</span></div>
     <div class="hr-dashed"></div>
-    
     <div id="items-box">Loading...</div>
-    
     <div class="hr-dashed"></div>
-    
     <div class="flex line bold"><span id="item-count-label">Total items:</span><span id="total-amount">$0.00</span></div>
-    <br>
+    <div class="hr-dashed"></div>
     <div class="flex line"><span>EFT</span><span id="eft-amount">$0.00</span></div>
     <div class="flex line bold"><span>GST INCLUDED IN TOTAL</span><span id="gst-amount">$0.00</span></div>
-    
-    <div class="hr-dashed" style="margin: 20px 0;"></div>
-    
-    <div class="flex line"><span>Coles</span><span>VIC AU</span></div>
-    <div class="flex line"><span>15/06/26 19:30</span><span>39832829 &nbsp; NG23B1</span></div>
+    <div class="hr-dashed"></div>
     <div class="flex line"><span>***** 6784</span><span>MASTERCARD</span></div>
-    <div class="flex line"><span>CREDIT ACCOUNT</span><span>DEBIT MASTERCARD</span></div>
-    <div class="flex line"><span>APSN 0000 &nbsp; ATC 0618</span><span>A00000000041010</span></div>
-    <div class="flex line bold"><span>PURCHASE</span><span id="card-total">AUD$0.00</span></div>
-    <div class="line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
-    <div class="line">AUTH 013657</div>
-    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
-    
-    <div class="hr-dashed" style="margin: 20px 0;"></div>
-    
-    <div class="line">Flybuys Card NO: 27930284920194</div>
-    <div class="line">% = Taxable items</div>
-    <div class="line">Flybuys points as of yesterday: 1,454</div>
-    
+    <div class="flex line bold"><span>PURCHASE</span><span id="card-total">$0.00</span></div>
+    <div class="line">AUTH 013657 &nbsp;&nbsp;&nbsp; (00)APPROVED</div>
     <img src="barcode.png" class="barcode-img">
 </div>
-
 <script>
+    function updateTimestamp() {
+        const now = new Date();
+        document.getElementById('cur-date').innerText = now.toLocaleDateString('en-AU');
+        document.getElementById('cur-time').innerText = now.toLocaleTimeString('en-AU', {hour: '2-digit', minute:'2-digit'});
+    }
+    setInterval(updateTimestamp, 1000);
+    updateTimestamp();
+
     const API_URL = 'https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec';
     async function loadData() {
         try {
@@ -75,21 +59,17 @@
             const data = await res.json();
             let total = 0, container = document.getElementById('items-box');
             container.innerHTML = '';
-            
             data.forEach(item => {
                 let p = parseFloat(item.price) || 0;
                 total += p;
                 container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${p.toFixed(2)}</span></div>`;
             });
-            
             document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
             document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
             document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
-            document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
+            document.getElementById('card-total').innerText = '$' + total.toFixed(2);
             document.getElementById('item-count-label').innerText = `Total for ${data.length} items:`;
-        } catch(e) { 
-            document.getElementById('items-box').innerHTML = '<div class="line text-center" style="color: red;">Error loading items</div>'; 
-        }
+        } catch(e) { document.getElementById('items-box').innerHTML = 'Error loading items'; }
     }
     loadData();
 </script>
