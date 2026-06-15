@@ -165,7 +165,8 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     });
 });
 
-/* Simple bottom bounce (header-safe) */
+/* SIMPLE BOTTOM BOUNCE — REMOVED (it used transform and broke sticky) */
+/*
 let bouncing = false;
 const receiptEl = document.querySelector(".receipt");
 
@@ -187,6 +188,7 @@ document.addEventListener("scroll", () => {
         }, 100);
     }
 });
+*/
 
 /* Multibuy logic */
 function detectMultibuy(items) {
@@ -286,5 +288,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
+
 </body>
 </html>
