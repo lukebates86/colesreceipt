@@ -10,98 +10,99 @@
 
 <style>
     body {
-        background: #dcdcdc;
-        font-family: 'Roboto', sans-serif; /* CHANGED: was 'Roboto Mono', monospace */
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        padding: 10px;
-    }
+    background: #dcdcdc;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
 
-    .receipt {
-        width: 100%;
-        max-width: 330px;
-        background: #fff;
-        padding: 20px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.15);
-    }
+.receipt {
+    width: 100%;
+    max-width: 330px;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+}
 
-    .line {
-        font-size: 13px;
-        line-height: 1.25;
-        letter-spacing: 0.2px;
-        margin: 4px 0;
-    }
+.line {
+    font-size: 13px;
+    line-height: 1.15;      /* CHANGED: tighter, matches Coles */
+    letter-spacing: 0.15px; /* CHANGED: slightly reduced */
+    margin: 3px 0;          /* CHANGED: tighter vertical spacing */
+}
 
-    .flex {
-        display: flex;
-        justify-content: space-between;
-    }
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
 
-    .flex span:first-child {
-        flex: 1;
-        padding-right: 10px;
-        word-break: break-word;
-    }
+.flex span:first-child {
+    flex: 1;
+    padding-right: 10px;
+    word-break: break-word;
+}
 
-    .flex span:last-child {
-        min-width: 60px;
-        text-align: right;
-    }
+.flex span:last-child {
+    min-width: 50px;        /* CHANGED: was 60px */
+    text-align: right;
+}
 
-    .hr {
-        border-bottom: 2px solid #000;
-        margin: 12px 0;
-    }
+.hr {
+    border-bottom: 2px solid #000;
+    margin: 12px 0;
+}
 
-    .hr-dashed {
-        border-bottom: 1px dashed #000;
-        margin: 12px 0;
-    }
+.hr-dashed {
+    border-bottom: 1px dashed #000;
+    margin: 12px 0;
+}
 
-    .barcode-img {
-        width: 100%;
-        max-width: 160px;
-        margin: 15px auto 0;
-        display: block;
-        filter: grayscale(100%);
-        opacity: 0.75;
-    }
+.barcode-img {
+    width: 100%;
+    max-width: 160px;
+    margin: 15px auto 0;
+    display: block;
+    filter: grayscale(100%);
+    opacity: 0.75;
+}
 
-    .logo {
-        font-size: 38px;
-        font-weight: 700;
-        text-align: center;
-        color: #e31837;
-        margin: 6px 0 14px 0;
-        letter-spacing: -2px;
-    }
+.logo {
+    font-size: 38px;
+    font-weight: 700;
+    text-align: center;
+    color: #e31837;
+    margin: 6px 0 14px 0;
+    letter-spacing: -2px;
+}
 
-    .text-center {
-        text-align: center;
-    }
+.text-center {
+    text-align: center;
+}
 
-    .header-bar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        background: #fff;
-        padding: 15px 20px;
-        margin: -20px -20px 20px -20px;
-        border-bottom: 2px solid #dcdcdc;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 700;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-    }
+.header-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #fff;
+    padding: 15px 20px;
+    margin: -20px -20px 20px -20px;
+    border-bottom: 2px solid #dcdcdc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
 
-    .header-icon {
-        width: 26px;
-        height: 26px;
-        object-fit: contain;
-        display: block;
-    }
+.header-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
+}
+
 </style>
 </head>
 
