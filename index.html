@@ -79,11 +79,39 @@
     .text-center {
         text-align: center;
     }
+
+    .header-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #fff;
+    padding: 15px 20px;
+    margin: -20px -20px 20px -20px;
+    border-bottom: 2px solid #dcdcdc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+
+.header-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
+}
+
 </style>
 </head>
 
 <body>
 <div class="receipt">
+
+    <div class="header-bar">
+        <img src="Share.png" alt="Share" class="header-icon">
+        <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
+        <img src="Close.png" alt="Close" class="header-icon">
+    </div>
 
     <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
     <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
