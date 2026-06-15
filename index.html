@@ -23,6 +23,8 @@
         background: #fff;
         padding: 20px;
         box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
     }
 
     .line {
@@ -102,15 +104,38 @@
         display: block;
     }
 
+    /* ===== SHARE ICON ANIMATION ===== */
+    .header-icon.share {
+        animation: pulseShare 1.6s ease-out 1;
+        transform-origin: center;
+    }
+
+    @keyframes pulseShare {
+        0% { transform: scale(1); opacity: 0.6; }
+        40% { transform: scale(1.18); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ===== SWIPE DOWN TO CLOSE FADE ===== */
+    .swipe-fade {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0));
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+    }
+
+    .swipe-fade.visible {
+        opacity: 1;
+    }
+
     /* ===== TOTALS BLOCK ===== */
-    .totals-subtotal {
-        font-weight: 400;
-    }
-
-    .totals-gst {
-        font-weight: 600;
-    }
-
+    .totals-subtotal { font-weight: 400; }
+    .totals-gst { font-weight: 600; }
     .totals-total {
         font-weight: 700;
         font-size: 14px;
@@ -136,30 +161,32 @@
         margin-bottom: 2px;
     }
 
-    /* ===== EFTPOS BLOCK (MONOSPACE) ===== */
+    /* ===== EFTPOS BLOCK ===== */
     .eft-line {
         font-family: 'Roboto Mono', monospace;
         font-size: 12px;
         letter-spacing: 0.2px;
     }
 
-    /* ===== TAXABLE ITEMS FOOTNOTE ===== */
+    /* ===== TAX NOTES ===== */
     .tax-note {
-        margin-top: 4px;         /* CHANGED: tighter */
-        margin-bottom: 2px;      /* CHANGED: tighter */
+        margin-top: 4px;
+        margin-bottom: 2px;
         font-size: 12px;
         opacity: 0.85;
         letter-spacing: 0.2px;
     }
-    
 </style>
 </head>
 
 <body>
 <div class="receipt">
 
+    <!-- Swipe fade overlay -->
+    <div class="swipe-fade" id="swipeFade"></div>
+
     <div class="header-bar">
-        <img src="Share.png" alt="Share" class="header-icon">
+        <img src="Share.png" alt="Share" class="header-icon share">
         <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
         <img src="Close.png" alt="Close" class="header-icon">
     </div>
@@ -194,7 +221,6 @@
 
     <div class="hr-dashed"></div>
 
-    <!-- TOTALS BLOCK -->
     <div class="flex line totals-subtotal">
         <span>SUBTOTAL</span>
         <span id="subtotal-amount">$0.00</span>
@@ -212,7 +238,6 @@
 
     <br>
 
-    <!-- EFTPOS BLOCK -->
     <div class="flex line">
         <span>EFT</span>
         <span id="eft-amount">$0.00</span>
@@ -263,6 +288,7 @@
 </div>
 
 <script>
+/* Timestamp logic */
 function updateTimestamp() {
     const now = new Date();
     const d = now.toLocaleDateString('en-AU');
@@ -277,6 +303,7 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
+/* Barcode */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
     let url = `https://barcode.tec-it.com/barcode.ashx?data=${receiptNumber}&code=Code128&dpi=96`;
@@ -284,6 +311,21 @@ function generateBarcode() {
 }
 generateBarcode();
 
+/* Swipe-down fade logic */
+let lastScroll = 0;
+const fade = document.getElementById("swipeFade");
+
+document.addEventListener("scroll", () => {
+    const current = window.scrollY;
+    if (current < lastScroll && current < 40) {
+        fade.classList.add("visible");
+    } else {
+        fade.classList.remove("visible");
+    }
+    lastScroll = current;
+});
+
+/* Multibuy logic + data load */
 function detectMultibuy(items) {
     const groups = {};
     items.forEach(item => {
