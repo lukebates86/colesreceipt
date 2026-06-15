@@ -188,23 +188,3 @@
 </script>
 </body>
 </html>
-                let p = parseFloat(item.price) || 0;
-                total += p;
-                container.innerHTML += `<div class="flex line"><span>${item.name}</span><span>${p.toFixed(2)}</span></div>`;
-            });
-            
-            document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
-            document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
-            document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
-            document.getElementById('card-total').innerText = 'AUD$' + total.toFixed(2);
-            document.getElementById('item-count-label').innerText = `Total for ${data.length} items:`;
-        } catch(e) { 
-            console.error(e);
-            document.getElementById('items-box').innerHTML = '<div class="line text-center" style="color:red;">Error loading items</div>';
-        }
-    }
-    updateDateTime();
-    loadData();
-</script>
-</body>
-</html>
