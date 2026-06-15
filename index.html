@@ -79,7 +79,7 @@
         font-size: 38px;
         font-weight: 700;
         text-align: center;
-        color: #e31837;
+        color: #009950;
         margin: 6px 0 14px 0;
         letter-spacing: -2px;
     }
@@ -190,9 +190,9 @@
         <img src="Close.png" alt="Close" class="header-icon">
     </div>
 
-    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Woolworth Supermarkets Australia Pty Ltd</div>
     <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
-    <div class="logo">coles</div>
+    <div class="logo">Woolworths</div>
 
     <div class="line">Store: 7723 - CS SSC</div>
     <div class="line">Store Manager: Alan Yee</div>
@@ -347,28 +347,7 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     });
 });
 
-/* Simple bottom bounce (header-safe) */
-let bouncing = false;
-const receiptEl = document.querySelector(".receipt");
-
-document.addEventListener("scroll", () => {
-    const maxScroll = document.body.scrollHeight - window.innerHeight;
-
-    if (!bouncing && window.scrollY >= maxScroll - 2) {
-        bouncing = true;
-
-        receiptEl.style.transition = "transform 0.2s ease-out";
-        receiptEl.style.transform = "translateY(-12px)";
-
-        setTimeout(() => {
-            receiptEl.style.transform = "translateY(0)";
-            setTimeout(() => {
-                receiptEl.style.transition = "";
-                bouncing = false;
-            }, 200);
-        }, 100);
-    }
-});
+/* BOTTOM BOUNCE REMOVED — it used transform and broke sticky */
 
 /* Multibuy logic */
 function detectMultibuy(items) {
@@ -468,5 +447,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 </script>
+
 </body>
 </html>
