@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tax Invoice Receipt</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- CHANGED: use Roboto (sans-serif) instead of Roboto Mono -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
     body {
         background: #dcdcdc;
-        font-family: 'Roboto Mono', monospace;
+        font-family: 'Roboto', sans-serif; /* CHANGED: was 'Roboto Mono', monospace */
         margin: 0;
         display: flex;
         justify-content: center;
@@ -80,30 +81,27 @@
         text-align: center;
     }
 
-.header-bar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: #fff;
-    padding: 15px 20px;
-    margin: -20px -20px 20px -20px;
-    border-bottom: 2px solid #dcdcdc;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
+    .header-bar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #fff;
+        padding: 15px 20px;
+        margin: -20px -20px 20px -20px;
+        border-bottom: 2px solid #dcdcdc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
 
-    /* Soft Coles-style shadow fade */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-}
-
-.header-icon {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-    display: block;
-}
-
+    .header-icon {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+    }
 </style>
 </head>
 
