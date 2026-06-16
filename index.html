@@ -19,7 +19,6 @@
         font-family: 'Roboto', sans-serif;
         margin: 0;
         padding: 10px;
-        display: block;
     }
 
     .receipt {
@@ -27,15 +26,13 @@
         max-width: 330px;
         background: #fff;
         padding: 20px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        position: relative;
         margin: 0 auto;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
     }
 
     .line {
         font-size: 13px;
         line-height: 1.15;
-        letter-spacing: 0.15px;
         margin: 2px 0;
     }
 
@@ -49,7 +46,6 @@
     .flex span:first-child {
         flex: 1;
         padding-right: 10px;
-        word-break: break-word;
     }
 
     .flex span:last-child {
@@ -91,27 +87,12 @@
         cursor: pointer;
     }
 
-    .swipe-fade {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 40px;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0));
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.25s ease;
-    }
-
-    .swipe-fade.visible { opacity: 1; }
-
     .item-code {
         font-size: 11px;
         opacity: 0.65;
         margin-top: -1px;
         margin-bottom: 3px;
         padding-left: 2px;
-        letter-spacing: 0.3px;
     }
 
     .discount-line {
@@ -120,33 +101,24 @@
         margin: 2px 0;
     }
 
-    .totals-subtotal { font-weight: 400; }
-    .totals-gst { font-weight: 600; }
-    .totals-total { font-weight: 700; font-size: 14px; margin-top: 4px; }
-
-    .eft-line {
-        font-family: 'Roboto Mono', monospace;
-        font-size: 12px;
-        margin: 2px 0;
+    .totals-total {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
     }
 
-    .eft-bold { font-weight: 700; }
-
-    /* Taxable line */
     .taxable-banner {
         font-size: 13px;
         font-weight: 700;
         text-align: center;
-        margin: 0 0 2px 0;
+        margin-bottom: 2px;
     }
 
-    /* Savings block */
     .savings-stars {
         text-align: center;
         font-size: 17px;
         font-weight: 800;
         margin: 0;
-        line-height: 1.2;
     }
 
     .savings-line {
@@ -165,7 +137,6 @@
         margin: 6px 0 10px 0;
     }
 
-    /* Flybuys */
     .tax-note {
         margin-top: 6px;
         margin-bottom: 2px;
@@ -174,16 +145,22 @@
         text-align: center;
     }
 
-    /* Barcode */
+    /* FINAL BARCODE CSS */
     .barcode-img {
         width: 100%;
         max-width: 280px;
-        height: 60px;
+        height: auto;
         margin: 14px auto 4px;
         display: block;
-        filter: grayscale(100%);
-        opacity: 0.50;
+        filter: none;
+        opacity: 1;
         object-fit: contain;
+    }
+
+    #barcode {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     #barcode-id {
@@ -191,6 +168,7 @@
         font-size: 12px;
         opacity: 0.85;
         text-align: center;
+        display: block;
         margin-top: 6px;
     }
 
@@ -204,8 +182,6 @@
 
 <body>
 <div class="receipt">
-
-    <div class="swipe-fade" id="swipeFade"></div>
 
     <div class="header-bar">
         <img src="Share.png" class="header-icon">
@@ -245,14 +221,12 @@
 
     <div class="hr-dashed"></div>
 
-            <!-- TOTALS CONTINUED FROM PART 1 -->
-
-    <div class="flex line totals-subtotal">
+    <div class="flex line">
         <span>SUBTOTAL</span>
         <span id="subtotal-amount">$0.00</span>
     </div>
 
-    <div class="flex line totals-gst">
+    <div class="flex line">
         <span>GST INCLUDED</span>
         <span id="gst-amount">$0.00</span>
     </div>
@@ -272,79 +246,67 @@
         <span id="gst-total-amount">$0.00</span>
     </div>
 
-    <div class="hr-dashed" style="margin: 20px 0;"></div>
+    <div class="hr-dashed" style="margin:20px 0;"></div>
 
-    <!-- EFTPOS BLOCK -->
-    <div class="flex line eft-line">
+    <div class="flex line">
         <span>Coles</span>
         <span>VIC AU</span>
     </div>
 
-    <div class="flex line eft-line">
+    <div class="flex line">
         <span><span id="cur-date2"></span> <span id="cur-time2"></span></span>
         <span>39832829 &nbsp; NG23B1</span>
     </div>
 
-    <div class="flex line eft-line">
+    <div class="flex line">
         <span>***** 6784</span>
         <span>MASTERCARD</span>
     </div>
 
-    <div class="flex line eft-line">
+    <div class="flex line">
         <span>CREDIT ACCOUNT</span>
         <span>DEBIT MASTERCARD</span>
     </div>
 
-    <div class="flex line eft-line">
+    <div class="flex line">
         <span>APSN 0000 &nbsp; ATC 0618</span>
         <span>A00000000041010</span>
     </div>
 
-    <div class="flex line eft-line eft-bold">
+    <div class="flex line" style="font-weight:700;">
         <span>PURCHASE</span>
         <span id="card-total">$0.00</span>
     </div>
 
-    <div class="line eft-line">RRN 001110156601 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (00)APPROVED</div>
-    <div class="line eft-line">AUTH 013657</div>
-    <div class="line eft-line">NO PIN OR SIGNATURE REQUIRED</div>
+    <div class="line">(00)APPROVED</div>
+    <div class="line">AUTH 013657</div>
+    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
 
-    <div class="hr-dashed" style="margin: 20px 0;"></div>
+    <div class="hr-dashed" style="margin:20px 0;"></div>
 
-    <!-- % TAXABLE ABOVE SAVINGS -->
     <div class="taxable-banner">% = Taxable items</div>
 
-    <!-- TOTAL SAVINGS BLOCK -->
     <div id="savings-block" style="display:none;">
         <div class="savings-stars">********************************************</div>
-
         <div class="savings-line">
             <span>Total Savings</span>
             <span id="savings-amount">$0.00</span>
         </div>
-
         <div class="savings-stars">********************************************</div>
-
-        <div class="savings-note">
-            Total Savings include any Promotional and Loyalty Discounts.
-        </div>
+        <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
     </div>
 
-    <!-- FLYBUYS BLOCK -->
     <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
     <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
 
-    <!-- BARCODE -->
     <img id="barcode" class="barcode-img" alt="Barcode">
     <span id="barcode-id"></span>
 
-    <!-- CREDITS -->
     <div class="line credits-line" id="credits-line">Credits earned this visit: 0</div>
 
-</div> <!-- END RECEIPT -->
+</div>
 
 <script>
-/* Timestamp logic */
 function updateTimestamp() {
     const now = new Date();
     const d = now.toLocaleDateString('en-AU');
@@ -359,50 +321,24 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
-/* NEW BARCODE — BWIP-JS (Coles-accurate thin bars) */
+/* FINAL BARCODE — COLes-accurate thin bars */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
 
-    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=2&height=10&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF`;
+    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.7&height=12&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF`;
 
     document.getElementById('barcode').src = url;
 }
 generateBarcode();
 
-/* Long transaction ID under barcode */
+/* Long transaction ID */
 function generateBarcodeID() {
     let id = Date.now().toString() + Math.floor(Math.random() * 1000);
     document.getElementById('barcode-id').innerText = id;
 }
 generateBarcodeID();
 
-/* Swipe fade */
-let lastScroll = 0;
-const fade = document.getElementById("swipeFade");
-
-document.addEventListener("scroll", () => {
-    const current = window.scrollY;
-    fade.classList.toggle("visible", current < lastScroll && current < 40);
-    lastScroll = current;
-});
-
-/* Scroll snap */
-let scrollTimeout;
-document.addEventListener("scroll", () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-        if (window.scrollY < 25) {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-    }, 120);
-});
-
-/* Tap header to scroll to top */
-document.querySelector(".header-bar").addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-/* Helper: format unit price for quantity line */
+/* Format unit price */
 function formatUnitPrice(value) {
     let s = value.toFixed(2);
     if (s.endsWith("00")) s = s.slice(0, -3);
@@ -410,9 +346,9 @@ function formatUnitPrice(value) {
     return s;
 }
 
-/* Load data with quantity + multibuy + savings + credits */
+/* Load items */
 async function loadData() {
-    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";  /* ← replace with your real URL */
+    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
     try {
         const res = await fetch(API_URL);
@@ -431,14 +367,7 @@ async function loadData() {
             const code = item.code;
             const offerQty = Number(item.offerQty ?? 0);
             const offerTotal = Number(item.offerTotal ?? 0);
-            const rawTaxable = item.taxable;
-
-            const taxable =
-                rawTaxable === true ||
-                rawTaxable === "true" ||
-                rawTaxable === "TRUE" ||
-                rawTaxable === 1 ||
-                rawTaxable === "1";
+            const taxable = ["true","TRUE","1",1,true].includes(item.taxable);
 
             const lineTotal = unitPrice * quantity;
             total += lineTotal;
@@ -452,32 +381,29 @@ async function loadData() {
             `;
 
             if (quantity > 1) {
-                const unitFormatted = formatUnitPrice(unitPrice);
                 container.innerHTML += `
                     <div class="line" style="padding-left:2px;">
-                        ${quantity} @ $${unitFormatted} EACH
+                        ${quantity} @ $${formatUnitPrice(unitPrice)} EACH
                     </div>
                 `;
             }
 
             if (offerQty && offerTotal && quantity >= offerQty) {
                 const fullOffers = Math.floor(quantity / offerQty);
-                if (fullOffers > 0) {
-                    const normalPrice = offerQty * unitPrice * fullOffers;
-                    const dealPrice = offerTotal * fullOffers;
-                    const discountValue = normalPrice - dealPrice;
+                const normalPrice = offerQty * unitPrice * fullOffers;
+                const dealPrice = offerTotal * fullOffers;
+                const discountValue = normalPrice - dealPrice;
 
-                    if (discountValue > 0) {
-                        total -= discountValue;
-                        totalSavings += discountValue;
+                if (discountValue > 0) {
+                    total -= discountValue;
+                    totalSavings += discountValue;
 
-                        container.innerHTML += `
-                            <div class="flex line discount-line">
-                                <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
-                                <span>-$${discountValue.toFixed(2)}</span>
-                            </div>
-                        `;
-                    }
+                    container.innerHTML += `
+                        <div class="flex line discount-line">
+                            <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
+                            <span>-$${discountValue.toFixed(2)}</span>
+                        </div>
+                    `;
                 }
             }
         });
@@ -485,37 +411,24 @@ async function loadData() {
         document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
-
         document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-total-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('card-total').innerText = '$' + total.toFixed(2);
 
         if (totalSavings > 0) {
-            document.getElementById('savings-amount').innerText =
-                '$' + totalSavings.toFixed(2);
+            document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
             document.getElementById('savings-block').style.display = 'block';
-        } else {
-            document.getElementById('savings-block').style.display = 'none';
         }
 
         const credits = Math.floor(total / 20);
-        document.getElementById('credits-line').innerText =
-            'Credits earned this visit: ' + credits;
+        document.getElementById('credits-line').innerText = 'Credits earned this visit: ' + credits;
 
     } catch (e) {
         document.getElementById('items-box').innerText = 'Error loading items';
-        console.error(e);
     }
 }
 
 loadData();
-
-/* PWA */
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-    });
-}
 </script>
 
 </body>
