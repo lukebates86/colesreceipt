@@ -19,7 +19,7 @@
         font-family: 'Roboto', sans-serif;
         margin: 0;
         padding: 10px;
-        display: block; /* FIXED: was flex, which breaks sticky */
+        display: block;
     }
 
     .receipt {
@@ -29,8 +29,7 @@
         padding: 20px;
         box-shadow: 0 0 15px rgba(0,0,0,0.15);
         position: relative;
-        margin: 0 auto; /* FIXED: replaces flex centering */
-        /* overflow: hidden;  <-- REMOVED: breaks sticky */
+        margin: 0 auto;
     }
 
     .line {
@@ -138,14 +137,6 @@
         opacity: 1;
     }
 
-    .totals-subtotal { font-weight: 400; }
-    .totals-gst { font-weight: 600; }
-    .totals-total {
-        font-weight: 700;
-        font-size: 14px;
-        margin-top: 4px;
-    }
-
     .item-code {
         font-size: 11px;
         opacity: 0.65;
@@ -157,10 +148,22 @@
 
     .discount-line {
         font-style: italic;
+        font-size: 12px;
         color: #444;
-        font-size: 13px;
-        margin-top: 2px;
-        margin-bottom: 2px;
+        margin-top: -2px;
+        margin-bottom: 4px;
+    }
+
+    .discount-line span:last-child {
+        color: #000;
+    }
+
+    .totals-subtotal { font-weight: 400; }
+    .totals-gst { font-weight: 600; }
+    .totals-total {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
     }
 
     .eft-line {
@@ -184,45 +187,39 @@
 
     <div class="swipe-fade" id="swipeFade"></div>
 
-<div class="header-bar">
-    <img src="Share.png" alt="Share" class="header-icon share">
-    <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
-    <img src="Close.png" alt="Close" class="header-icon">
-</div>
+    <div class="header-bar">
+        <img src="Share.png" alt="Share" class="header-icon share">
+        <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
+        <img src="Close.png" alt="Close" class="header-icon">
+    </div>
 
-<!-- OFFICIAL COLES HEADER BLOCK -->
-<div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-<div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
-<div class="logo">coles</div>
+    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    <div class="logo">coles</div>
 
-<!-- STORE DETAILS -->
-<div class="line">Store: 575 - Malvern</div>
-<div class="line">Store Manager: Vikas</div>
-<div class="line">Phone: (03) 9508 0200</div>
-<div class="line">Served By: Assisted Checkout</div>
+    <div class="line">Store: 575 - Malvern</div>
+    <div class="line">Store Manager: Vikas</div>
+    <div class="line">Phone: (03) 9508 0200</div>
+    <div class="line">Served By: Assisted Checkout</div>
 
-<!-- TRANSACTION METADATA -->
-<div class="flex line">
-    <span>Register: 124</span>
-    <span>Receipt: 5808</span>
-</div>
+    <div class="flex line">
+        <span>Register: 124</span>
+        <span>Receipt: 5808</span>
+    </div>
 
-<div class="flex line">
-    <span>Date: <span id="cur-date"></span></span>
-    <span>Time: <span id="cur-time"></span></span>
-</div>
+    <div class="flex line">
+        <span>Date: <span id="cur-date"></span></span>
+        <span>Time: <span id="cur-time"></span></span>
+    </div>
 
-<!-- DIVIDER -->
-<div class="hr"></div>
+    <div class="hr"></div>
 
-<!-- DESCRIPTION HEADER -->
-<div class="flex line" style="font-weight:700;">
-    <span>Description</span>
-    <span>$</span>
-</div>
+    <div class="flex line" style="font-weight:700;">
+        <span>Description</span>
+        <span>$</span>
+    </div>
 
-<div class="hr-dashed"></div>
-
+    <div class="hr-dashed"></div>
 
     <div id="items-box">Loading...</div>
 
@@ -355,48 +352,7 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     });
 });
 
-/* BOTTOM BOUNCE REMOVED — it used transform and broke sticky */
-
-/* Multibuy logic */
-function detectMultibuy(items) {
-    const groups = {};
-    items.forEach(item => {
-        if (!groups[item.name]) groups[item.name] = [];
-        groups[item.name].push(item);
-    });
-
-    const discounts = [];
-
-    Object.keys(groups).forEach(name => {
-        const group = groups[name];
-        const sample = group[0];
-
-        if (!sample.offerQty || !sample.offerTotal) return;
-
-        const qty = group.length;
-        const offerQty = sample.offerQty;
-        const offerTotal = sample.offerTotal;
-        const unitPrice = sample.price;
-
-        const fullOffers = Math.floor(qty / offerQty);
-        if (fullOffers <= 0) return;
-
-        const normalPrice = offerQty * unitPrice * fullOffers;
-        const dealPrice = offerTotal * fullOffers;
-        const discountValue = normalPrice - dealPrice;
-
-        if (discountValue > 0) {
-            discounts.push({
-                name: "MULTIBUY DISCOUNT",
-                price: -discountValue
-            });
-        }
-    });
-
-    return discounts;
-}
-
-/* Load data */
+/* INLINE ITEM + DISCOUNT RENDERING */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
@@ -409,29 +365,59 @@ async function loadData() {
 
         let total = 0;
 
+        // Group items by name
+        const groups = {};
         data.forEach(item => {
-            total += item.price;
-
-            container.innerHTML += `
-                <div class="flex line">
-                    <span>${item.name}</span>
-                    <span>$${item.price.toFixed(2)}</span>
-                </div>
-                ${item.code ? `<div class="item-code">${item.code}</div>` : ""}
-            `;
+            if (!groups[item.name]) groups[item.name] = [];
+            groups[item.name].push(item);
         });
 
-        const discounts = detectMultibuy(data);
-        discounts.forEach(d => {
-            total += d.price;
-            container.innerHTML += `
-                <div class="flex line discount-line">
-                    <span>${d.name}</span>
-                    <span>$${d.price.toFixed(2)}</span>
-                </div>
-            `;
+        // Render items + inline discounts
+        Object.keys(groups).forEach(name => {
+            const group = groups[name];
+            const sample = group[0];
+
+            // Render each item
+            group.forEach(item => {
+                total += item.price;
+
+                container.innerHTML += `
+                    <div class="flex line">
+                        <span>${item.name}</span>
+                        <span>$${item.price.toFixed(2)}</span>
+                    </div>
+                    ${item.code ? `<div class="item-code">${item.code}</div>` : ""}
+                `;
+            });
+
+            // Inline discount
+            if (sample.offerQty && sample.offerTotal) {
+                const qty = group.length;
+                const offerQty = sample.offerQty;
+                const offerTotal = sample.offerTotal;
+                const unitPrice = sample.price;
+
+                const fullOffers = Math.floor(qty / offerQty);
+                if (fullOffers > 0) {
+                    const normalPrice = offerQty * unitPrice * fullOffers;
+                    const dealPrice = offerTotal * fullOffers;
+                    const discountValue = normalPrice - dealPrice;
+
+                    if (discountValue > 0) {
+                        total -= discountValue;
+
+                        container.innerHTML += `
+                            <div class="flex line discount-line">
+                                <span>${sample.name} ANY ${offerQty} FOR $${offerTotal}</span>
+                                <span>-$${discountValue.toFixed(2)}</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
         });
 
+        // Totals
         document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
@@ -448,7 +434,7 @@ async function loadData() {
 
 loadData();
 
-/* PWA: register service worker */
+/* PWA */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js');
