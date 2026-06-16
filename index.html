@@ -65,15 +65,6 @@
         margin: 12px 0;
     }
 
-    .barcode-img {
-        width: 100%;
-        max-width: 160px;
-        margin: 22px auto 6px;
-        display: block;
-        filter: grayscale(100%);
-        opacity: 0.75;
-    }
-
     .logo {
         font-size: 38px;
         font-weight: 700;
@@ -81,10 +72,6 @@
         color: #e31837;
         margin: 6px 0 14px 0;
         letter-spacing: -2px;
-    }
-
-    .text-center {
-        text-align: center;
     }
 
     .header-bar {
@@ -108,17 +95,6 @@
         object-fit: contain;
         display: block;
         cursor: pointer;
-    }
-
-    .header-icon.share {
-        animation: pulseShare 1.6s ease-out 1;
-        transform-origin: center;
-    }
-
-    @keyframes pulseShare {
-        0% { transform: scale(1); opacity: 0.6; }
-        40% { transform: scale(1.18); opacity: 1; }
-        100% { transform: scale(1); opacity: 1; }
     }
 
     .swipe-fade {
@@ -146,7 +122,7 @@
         letter-spacing: 0.3px;
     }
 
-    /* AUTHENTIC COLES DISCOUNT LINE */
+    /* Discount line (authentic Coles) */
     .discount-line {
         font-weight: 700;
         font-size: 13px;
@@ -154,7 +130,7 @@
         margin: 3px 0;
     }
 
-    /* TOTALS BLOCK */
+    /* Totals */
     .totals-subtotal { font-weight: 400; }
     .totals-gst { font-weight: 600; }
     .totals-total {
@@ -163,7 +139,7 @@
         margin-top: 4px;
     }
 
-    /* EFTPOS BLOCK */
+    /* EFTPOS block */
     .eft-line {
         font-family: 'Roboto Mono', monospace;
         font-size: 12px;
@@ -175,12 +151,32 @@
         font-weight: 700;
     }
 
+    /* Flybuys block */
     .tax-note {
-        margin-top: 4px;
+        margin-top: 2px;
         margin-bottom: 2px;
         font-size: 12px;
         opacity: 0.85;
         letter-spacing: 0.2px;
+    }
+
+    /* Barcode */
+    .barcode-img {
+        width: 100%;
+        max-width: 160px;
+        margin: 18px auto 4px;
+        display: block;
+        filter: grayscale(100%);
+        opacity: 0.75;
+    }
+
+    #barcode-id {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        opacity: 0.85;
+        text-align: center;
+        display: block;
+        margin-top: 4px;
     }
 </style>
 </head>
@@ -191,9 +187,9 @@
     <div class="swipe-fade" id="swipeFade"></div>
 
     <div class="header-bar">
-        <img src="Share.png" alt="Share" class="header-icon share">
+        <img src="Share.png" class="header-icon share">
         <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
-        <img src="Close.png" alt="Close" class="header-icon">
+        <img src="Close.png" class="header-icon">
     </div>
 
     <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
@@ -228,7 +224,7 @@
 
     <div class="hr-dashed"></div>
 
-    <!-- TOTALS BLOCK -->
+    <!-- TOTALS -->
     <div class="flex line totals-subtotal">
         <span>SUBTOTAL</span>
         <span id="subtotal-amount">$0.00</span>
@@ -293,11 +289,16 @@
 
     <div class="hr-dashed" style="margin: 20px 0;"></div>
 
+    <!-- FLYBUYS BLOCK -->
     <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
     <div class="line tax-note">% = Taxable items</div>
     <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
 
+    <!-- BARCODE -->
     <img id="barcode" class="barcode-img" alt="Barcode">
+
+    <!-- BARCODE ID -->
+    <span id="barcode-id"></span>
 
 </div>
 
@@ -325,44 +326,40 @@ function generateBarcode() {
 }
 generateBarcode();
 
-/* Swipe-down fade logic */
+/* Barcode ID (Coles-style long numeric string) */
+function generateBarcodeID() {
+    let id = Date.now().toString() + Math.floor(Math.random() * 1000);
+    document.getElementById('barcode-id').innerText = id;
+}
+generateBarcodeID();
+
+/* Swipe fade */
 let lastScroll = 0;
 const fade = document.getElementById("swipeFade");
 
 document.addEventListener("scroll", () => {
     const current = window.scrollY;
-    if (current < lastScroll && current < 40) {
-        fade.classList.add("visible");
-    } else {
-        fade.classList.remove("visible");
-    }
+    fade.classList.toggle("visible", current < lastScroll && current < 40);
     lastScroll = current;
 });
 
-/* Smooth scroll-to-top snap */
+/* Scroll snap */
 let scrollTimeout;
 document.addEventListener("scroll", () => {
     clearTimeout(scrollTimeout);
-
     scrollTimeout = setTimeout(() => {
         if (window.scrollY < 25) {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     }, 120);
 });
 
 /* Tap header to scroll to top */
 document.querySelector(".header-bar").addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* INLINE ITEM + DISCOUNT + TAXABLE RENDERING */
+/* Load data */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
@@ -375,19 +372,16 @@ async function loadData() {
 
         let total = 0;
 
-        // Group items by name
         const groups = {};
         data.forEach(item => {
             if (!groups[item.name]) groups[item.name] = [];
             groups[item.name].push(item);
         });
 
-        // Render items + inline discounts
         Object.keys(groups).forEach(name => {
             const group = groups[name];
             const sample = group[0];
 
-            // Render each item
             group.forEach(item => {
                 total += item.price;
 
@@ -400,7 +394,6 @@ async function loadData() {
                 `;
             });
 
-            // Inline discount
             if (sample.offerQty && sample.offerTotal) {
                 const qty = group.length;
                 const offerQty = sample.offerQty;
@@ -427,7 +420,6 @@ async function loadData() {
             }
         });
 
-        // Totals
         document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
