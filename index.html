@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +37,11 @@
         font-size: 13px;
         line-height: 1.15;
         letter-spacing: 0.15px;
-        margin: 3px 0;
+        margin: 2px 0;
+    }
+
+    .text-center {
+        text-align: center;
     }
 
     .flex {
@@ -66,12 +71,12 @@
     }
 
     .logo {
-        font-size: 38px;
+        font-size: 42px;
         font-weight: 700;
         text-align: center;
         color: #e31837;
         margin: 6px 0 14px 0;
-        letter-spacing: -2px;
+        letter-spacing: -3px;
     }
 
     .header-bar {
@@ -117,7 +122,7 @@
         font-size: 11px;
         opacity: 0.65;
         margin-top: -1px;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
         padding-left: 2px;
         letter-spacing: 0.3px;
     }
@@ -127,7 +132,7 @@
         font-weight: 700;
         font-size: 13px;
         color: #000;
-        margin: 3px 0;
+        margin: 2px 0;
     }
 
     /* Totals */
@@ -158,16 +163,19 @@
         font-size: 12px;
         opacity: 0.85;
         letter-spacing: 0.2px;
+        text-align: center;
     }
 
     /* Barcode */
     .barcode-img {
         width: 100%;
-        max-width: 160px;
-        margin: 18px auto 4px;
+        max-width: 200px;
+        height: 48px;
+        margin: 16px auto 4px;
         display: block;
         filter: grayscale(100%);
-        opacity: 0.75;
+        opacity: 0.65;
+        object-fit: contain;
     }
 
     #barcode-id {
@@ -178,6 +186,27 @@
         display: block;
         margin-top: 4px;
     }
+
+    /* Savings block */
+    .savings-stars {
+        text-align: center;
+        font-size: 13px;
+        margin: 6px 0 2px 0;
+    }
+
+    .savings-line {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        margin: 2px 0;
+    }
+
+    .savings-note {
+        text-align: center;
+        font-size: 11px;
+        margin: 2px 0 6px 0;
+        opacity: 0.85;
+    }
 </style>
 </head>
 
@@ -187,7 +216,7 @@
     <div class="swipe-fade" id="swipeFade"></div>
 
     <div class="header-bar">
-        <img src="Share.png" class="header-icon share">
+        <img src="Share.png" class="header-icon">
         <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
         <img src="Close.png" class="header-icon">
     </div>
@@ -289,6 +318,14 @@
 
     <div class="hr-dashed" style="margin: 20px 0;"></div>
 
+    <!-- TOTAL SAVINGS BLOCK -->
+    <div id="savings-block" style="display:none;">
+        <div class="savings-stars">************************************</div>
+        <div class="savings-line" id="savings-line">Total Savings $0.00</div>
+        <div class="savings-stars">************************************</div>
+        <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
+    </div>
+
     <!-- FLYBUYS BLOCK -->
     <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
     <div class="line tax-note">% = Taxable items</div>
@@ -296,8 +333,6 @@
 
     <!-- BARCODE -->
     <img id="barcode" class="barcode-img" alt="Barcode">
-
-    <!-- BARCODE ID -->
     <span id="barcode-id"></span>
 
 </div>
@@ -326,7 +361,7 @@ function generateBarcode() {
 }
 generateBarcode();
 
-/* Barcode ID (Coles-style long numeric string) */
+/* Barcode ID (long numeric string) */
 function generateBarcodeID() {
     let id = Date.now().toString() + Math.floor(Math.random() * 1000);
     document.getElementById('barcode-id').innerText = id;
@@ -359,7 +394,18 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* Load data */
+/* Helper: format unit price for quantity line (drop trailing zeros) */
+function formatUnitPrice(value) {
+    let s = value.toFixed(2);
+    if (s.endsWith("00")) {
+        s = s.slice(0, -3);
+    } else if (s.endsWith("0")) {
+        s = s.slice(0, -1);
+    }
+    return s;
+}
+
+/* Load data with quantity + multibuy + savings */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
@@ -371,36 +417,50 @@ async function loadData() {
         container.innerHTML = "";
 
         let total = 0;
+        let totalSavings = 0;
 
-        const groups = {};
         data.forEach(item => {
-            if (!groups[item.name]) groups[item.name] = [];
-            groups[item.name].push(item);
-        });
+            // Normalise fields from sheet
+            const name = item["Item Name"] || item.name;
+            const unitPrice = Number(item["Price"] ?? item.price ?? 0);
+            const quantity = Number(item["Quantity"] ?? item.quantity ?? 1);
+            const code = item["Code"] ?? item.code ?? "";
+            const offerQty = Number(item["Offer Qty"] ?? item.offerQty ?? 0);
+            const offerTotal = Number(item["Offer Total"] ?? item.offerTotal ?? 0);
+            const rawTaxable = item["Taxable"] ?? item.taxable;
 
-        Object.keys(groups).forEach(name => {
-            const group = groups[name];
-            const sample = group[0];
+            const taxable =
+                rawTaxable === true ||
+                rawTaxable === "true" ||
+                rawTaxable === "TRUE" ||
+                rawTaxable === 1 ||
+                rawTaxable === "1";
 
-            group.forEach(item => {
-                total += item.price;
+            const lineTotal = unitPrice * quantity;
+            total += lineTotal;
 
+            // Item line
+            container.innerHTML += `
+                <div class="flex line">
+                    <span>${taxable ? '% ' : ''}${name}</span>
+                    <span>$${lineTotal.toFixed(2)}</span>
+                </div>
+                ${code ? `<div class="item-code">${code}</div>` : ""}
+            `;
+
+            // Quantity line (if more than 1)
+            if (quantity > 1) {
+                const unitFormatted = formatUnitPrice(unitPrice);
                 container.innerHTML += `
-                    <div class="flex line">
-                        <span>${item.taxable ? '% ' : ''}${item.name}</span>
-                        <span>$${item.price.toFixed(2)}</span>
+                    <div class="line" style="padding-left:2px;">
+                        ${quantity} @ $${unitFormatted} EACH
                     </div>
-                    ${item.code ? `<div class="item-code">${item.code}</div>` : ""}
                 `;
-            });
+            }
 
-            if (sample.offerQty && sample.offerTotal) {
-                const qty = group.length;
-                const offerQty = sample.offerQty;
-                const offerTotal = sample.offerTotal;
-                const unitPrice = sample.price;
-
-                const fullOffers = Math.floor(qty / offerQty);
+            // Multibuy discount (ANY X FOR $Y)
+            if (offerQty && offerTotal && quantity >= offerQty) {
+                const fullOffers = Math.floor(quantity / offerQty);
                 if (fullOffers > 0) {
                     const normalPrice = offerQty * unitPrice * fullOffers;
                     const dealPrice = offerTotal * fullOffers;
@@ -408,10 +468,11 @@ async function loadData() {
 
                     if (discountValue > 0) {
                         total -= discountValue;
+                        totalSavings += discountValue;
 
                         container.innerHTML += `
                             <div class="flex line discount-line">
-                                <span>${sample.name} ANY ${offerQty} FOR $${offerTotal}</span>
+                                <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
                                 <span>-$${discountValue.toFixed(2)}</span>
                             </div>
                         `;
@@ -420,6 +481,7 @@ async function loadData() {
             }
         });
 
+        // Totals
         document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
@@ -427,6 +489,15 @@ async function loadData() {
         document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-total-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('card-total').innerText = '$' + total.toFixed(2);
+
+        // Total Savings block
+        if (totalSavings > 0) {
+            document.getElementById('savings-line').innerText =
+                'Total Savings $' + totalSavings.toFixed(2);
+            document.getElementById('savings-block').style.display = 'block';
+        } else {
+            document.getElementById('savings-block').style.display = 'none';
+        }
 
     } catch (e) {
         document.getElementById('items-box').innerText = 'Error loading items';
