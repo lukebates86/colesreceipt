@@ -146,16 +146,12 @@
         letter-spacing: 0.3px;
     }
 
+    /* AUTHENTIC COLES DISCOUNT LINE */
     .discount-line {
-        font-style: italic;
-        font-size: 12px;
-        color: #444;
-        margin-top: -2px;
-        margin-bottom: 4px;
-    }
-
-    .discount-line span:last-child {
+        font-weight: 700;
+        font-size: 13px;
         color: #000;
+        margin: 3px 0;
     }
 
     .totals-subtotal { font-weight: 400; }
@@ -352,7 +348,7 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     });
 });
 
-/* INLINE ITEM + DISCOUNT RENDERING */
+/* INLINE ITEM + DISCOUNT + TAXABLE RENDERING */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
@@ -383,7 +379,7 @@ async function loadData() {
 
                 container.innerHTML += `
                     <div class="flex line">
-                        <span>${item.name}</span>
+                        <span>${item.taxable ? '% ' : ''}${item.name}</span>
                         <span>$${item.price.toFixed(2)}</span>
                     </div>
                     ${item.code ? `<div class="item-code">${item.code}</div>` : ""}
