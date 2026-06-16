@@ -87,16 +87,18 @@
         cursor: pointer;
     }
 
-    /* ⭐ HEADER-ONLY LETTER SPACING (0.45px) */
-    .header-top {
+    /* ⭐ TOP TWO LINES — 0.45px spacing */
+    .header-top .line {
         letter-spacing: 0.45px;
     }
 
-    .header-block {
+    /* ⭐ HEADER BLOCK — 0.45px spacing applied ONLY to text, not containers */
+    .header-block .line,
+    .header-block .line span {
         letter-spacing: 0.45px;
     }
 
-    /* ⭐ Correct Coles header spacing */
+    /* ⭐ Correct Coles header vertical spacing */
     .header-block .line {
         margin: 4px 0;
     }
@@ -211,7 +213,7 @@
         <img src="Close.png" class="header-icon">
     </div>
 
-    <!-- ⭐ TOP TWO LINES WITH 0.45px LETTER SPACING -->
+    <!-- ⭐ TOP TWO LINES -->
     <div class="header-top">
         <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
         <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
@@ -219,7 +221,7 @@
 
     <div class="logo">coles</div>
 
-    <!-- ⭐ HEADER BLOCK WITH 0.45px LETTER SPACING -->
+    <!-- ⭐ HEADER BLOCK -->
     <div class="header-block">
         <div class="line">Store: 575 - Malvern</div>
         <div class="line">Store Manager: Vikas</div>
