@@ -30,12 +30,12 @@
         box-shadow: 0 0 15px rgba(0,0,0,0.15);
     }
 
-.receipt {
-    letter-spacing: 0.5px; /* subtle expansion for printed look */
-}
-.logo {
-    letter-spacing: -2.5px; /* keep the COLES logo tight and bold */
-}
+    .receipt {
+        letter-spacing: 0.5px; /* subtle expansion for printed look */
+    }
+    .logo {
+        letter-spacing: -2.5px; /* keep the COLES logo tight and bold */
+    }
 
     .line {
         font-size: 13px;
@@ -100,7 +100,7 @@
     }
 
     .header-block {
-        letter-spacing: 0.35px;
+        letter-spacing: 0.45px; /* changed from 0.35px to 0.45px */
     }
 
     /* ⭐ Correct Coles header spacing */
@@ -241,8 +241,6 @@
         <div class="flex line">
             <span>Date: <span id="cur-date"></span></span>
             <span>Time: <span id="cur-time"></span></span>
-            <span id="cur-date2" style="display:none;"></span>
-            <span id="cur-time2" style="display:none;"></span>
         </div>
     </div>
 
@@ -316,9 +314,7 @@ function updateTimestamp() {
     const t = now.toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:false});
 
     document.getElementById('cur-date').innerText = d;
-    document.getElementById('cur-date2').innerText = dS;
     document.getElementById('cur-time').innerText = t;
-    document.getElementById('cur-time2').innerText = t;
 }
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
