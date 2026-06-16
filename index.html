@@ -30,15 +30,6 @@
         box-shadow: 0 0 15px rgba(0,0,0,0.15);
     }
 
-    .receipt {
-        letter-spacing: 0.5px; /* subtle expansion for printed look */
-    }
-    
-    .logo {
-        letter-spacing: -2.5px; /* keep the COLES logo tight and bold */
-    }
-
-
     .line {
         font-size: 13px;
         line-height: 1.15;
@@ -66,12 +57,12 @@
     .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
 
     .logo {
-        font-size: 62px;
-        font-weight: 600;
+        font-size: 42px;
+        font-weight: 700;
         text-align: center;
         color: #e31837;
         margin: 6px 0 14px 0;
-        letter-spacing: -1px;
+        letter-spacing: -2.5px;
     }
 
     .header-bar {
@@ -96,17 +87,26 @@
         cursor: pointer;
     }
 
+    /* ⭐ HEADER-ONLY LETTER SPACING (0.45px) */
+    .header-top {
+        letter-spacing: 0.45px;
+    }
+
+    .header-block {
+        letter-spacing: 0.45px;
+    }
+
     /* ⭐ Correct Coles header spacing */
     .header-block .line {
         margin: 4px 0;
     }
 
     .header-block .line:nth-child(4) {
-        margin-bottom: 8px; /* gap before Register/Receipt */
+        margin-bottom: 8px;
     }
 
     .header-block .line:nth-child(6) {
-        margin-top: 6px; /* gap before Date/Time */
+        margin-top: 6px;
     }
 
     .item-code {
@@ -211,12 +211,15 @@
         <img src="Close.png" class="header-icon">
     </div>
 
-    <!-- ⭐ RESTORED TOP LINES -->
-    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    <!-- ⭐ TOP TWO LINES WITH 0.45px LETTER SPACING -->
+    <div class="header-top">
+        <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+        <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    </div>
+
     <div class="logo">coles</div>
 
-    <!-- ⭐ HEADER BLOCK WITH CORRECT SPACING -->
+    <!-- ⭐ HEADER BLOCK WITH 0.45px LETTER SPACING -->
     <div class="header-block">
         <div class="line">Store: 575 - Malvern</div>
         <div class="line">Store Manager: Vikas</div>
@@ -271,42 +274,6 @@
         <span>GST INCLUDED IN TOTAL</span>
         <span id="gst-total-amount">$0.00</span>
     </div>
-
-    <div class="hr-dashed" style="margin:20px 0;"></div>
-
-    <div class="flex line">
-        <span>Coles</span>
-        <span>VIC AU</span>
-    </div>
-
-    <div class="flex line">
-        <span><span id="cur-date2"></span> <span id="cur-time2"></span></span>
-        <span>39832829 &nbsp; NG23B1</span>
-    </div>
-
-    <div class="flex line">
-        <span>***** 6784</span>
-        <span>MASTERCARD</span>
-    </div>
-
-    <div class="flex line">
-        <span>CREDIT ACCOUNT</span>
-        <span>DEBIT MASTERCARD</span>
-    </div>
-
-    <div class="flex line">
-        <span>APSN 0000 &nbsp; ATC 0618</span>
-        <span>A00000000041010</span>
-    </div>
-
-    <div class="flex line" style="font-weight:700;">
-        <span>PURCHASE</span>
-        <span id="card-total">$0.00</span>
-    </div>
-
-    <div class="line">(00)APPROVED</div>
-    <div class="line">AUTH 013657</div>
-    <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
 
     <div class="hr-dashed" style="margin:20px 0;"></div>
 
