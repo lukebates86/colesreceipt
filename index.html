@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,7 +126,6 @@
         letter-spacing: 0.3px;
     }
 
-    /* Discount line (authentic Coles) */
     .discount-line {
         font-weight: 700;
         font-size: 13px;
@@ -135,7 +133,6 @@
         margin: 2px 0;
     }
 
-    /* Totals */
     .totals-subtotal { font-weight: 400; }
     .totals-gst { font-weight: 600; }
     .totals-total {
@@ -144,7 +141,6 @@
         margin-top: 4px;
     }
 
-    /* EFTPOS block */
     .eft-line {
         font-family: 'Roboto Mono', monospace;
         font-size: 12px;
@@ -154,6 +150,36 @@
 
     .eft-bold {
         font-weight: 700;
+    }
+
+    /* Taxable line above savings */
+    .taxable-banner {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        margin: 10px 0 6px 0;
+    }
+
+    /* Savings block */
+    .savings-stars {
+        text-align: center;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 6px 0 2px 0;
+    }
+
+    .savings-line {
+        text-align: center;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 2px 0;
+    }
+
+    .savings-note {
+        text-align: center;
+        font-size: 11px;
+        margin: 2px 0 10px 0;
+        opacity: 0.85;
     }
 
     /* Flybuys block */
@@ -169,43 +195,22 @@
     /* Barcode */
     .barcode-img {
         width: 100%;
-        max-width: 200px;
-        height: 48px;
+        max-width: 260px;
+        height: 40px;
         margin: 16px auto 4px;
         display: block;
         filter: grayscale(100%);
-        opacity: 0.65;
+        opacity: 0.55;
         object-fit: contain;
     }
 
     #barcode-id {
         font-family: 'Roboto Mono', monospace;
-        font-size: 12px;
+        font-size: 13px;
         opacity: 0.85;
         text-align: center;
         display: block;
         margin-top: 4px;
-    }
-
-    /* Savings block */
-    .savings-stars {
-        text-align: center;
-        font-size: 13px;
-        margin: 6px 0 2px 0;
-    }
-
-    .savings-line {
-        text-align: center;
-        font-size: 13px;
-        font-weight: 700;
-        margin: 2px 0;
-    }
-
-    .savings-note {
-        text-align: center;
-        font-size: 11px;
-        margin: 2px 0 6px 0;
-        opacity: 0.85;
     }
 </style>
 </head>
@@ -318,17 +323,19 @@
 
     <div class="hr-dashed" style="margin: 20px 0;"></div>
 
+    <!-- % TAXABLE ABOVE SAVINGS -->
+    <div class="taxable-banner">% = Taxable items</div>
+
     <!-- TOTAL SAVINGS BLOCK -->
     <div id="savings-block" style="display:none;">
-        <div class="savings-stars">************************************</div>
+        <div class="savings-stars">********************************************</div>
         <div class="savings-line" id="savings-line">Total Savings $0.00</div>
-        <div class="savings-stars">************************************</div>
+        <div class="savings-stars">********************************************</div>
         <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
     </div>
 
     <!-- FLYBUYS BLOCK -->
     <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
-    <div class="line tax-note">% = Taxable items</div>
     <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
 
     <!-- BARCODE -->
@@ -420,14 +427,13 @@ async function loadData() {
         let totalSavings = 0;
 
         data.forEach(item => {
-            // Normalise fields from sheet
-            const name = item["Item Name"] || item.name;
-            const unitPrice = Number(item["Price"] ?? item.price ?? 0);
-            const quantity = Number(item["Quantity"] ?? item.quantity ?? 1);
-            const code = item["Code"] ?? item.code ?? "";
-            const offerQty = Number(item["Offer Qty"] ?? item.offerQty ?? 0);
-            const offerTotal = Number(item["Offer Total"] ?? item.offerTotal ?? 0);
-            const rawTaxable = item["Taxable"] ?? item.taxable;
+            const name = item.name;
+            const unitPrice = Number(item.price);
+            const quantity = Number(item.quantity ?? 1);
+            const code = item.code;
+            const offerQty = Number(item.offerQty ?? 0);
+            const offerTotal = Number(item.offerTotal ?? 0);
+            const rawTaxable = item.taxable;
 
             const taxable =
                 rawTaxable === true ||
@@ -439,7 +445,6 @@ async function loadData() {
             const lineTotal = unitPrice * quantity;
             total += lineTotal;
 
-            // Item line
             container.innerHTML += `
                 <div class="flex line">
                     <span>${taxable ? '% ' : ''}${name}</span>
@@ -448,7 +453,6 @@ async function loadData() {
                 ${code ? `<div class="item-code">${code}</div>` : ""}
             `;
 
-            // Quantity line (if more than 1)
             if (quantity > 1) {
                 const unitFormatted = formatUnitPrice(unitPrice);
                 container.innerHTML += `
@@ -458,7 +462,6 @@ async function loadData() {
                 `;
             }
 
-            // Multibuy discount (ANY X FOR $Y)
             if (offerQty && offerTotal && quantity >= offerQty) {
                 const fullOffers = Math.floor(quantity / offerQty);
                 if (fullOffers > 0) {
@@ -481,7 +484,6 @@ async function loadData() {
             }
         });
 
-        // Totals
         document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
@@ -490,7 +492,6 @@ async function loadData() {
         document.getElementById('gst-total-amount').innerText = '$' + (total / 11).toFixed(2);
         document.getElementById('card-total').innerText = '$' + total.toFixed(2);
 
-        // Total Savings block
         if (totalSavings > 0) {
             document.getElementById('savings-line').innerText =
                 'Total Savings $' + totalSavings.toFixed(2);
