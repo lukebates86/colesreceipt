@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -157,60 +157,69 @@
         font-size: 13px;
         font-weight: 700;
         text-align: center;
-        margin: 10px 0 6px 0;
+        margin: 0 0 2px 0;
     }
 
     /* Savings block */
     .savings-stars {
         text-align: center;
-        font-size: 15px;
-        font-weight: 700;
-        margin: 6px 0 2px 0;
+        font-size: 17px;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.2;
     }
 
     .savings-line {
-        text-align: center;
-        font-size: 15px;
-        font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        font-size: 16px;
+        font-weight: 800;
         margin: 2px 0;
+        padding: 0 4px;
     }
 
     .savings-note {
         text-align: center;
         font-size: 11px;
-        margin: 2px 0 10px 0;
-        opacity: 0.85;
+        opacity: 0.75;
+        margin: 6px 0 10px 0;
     }
 
     /* Flybuys block */
     .tax-note {
-        margin-top: 2px;
+        margin-top: 6px;
         margin-bottom: 2px;
         font-size: 12px;
-        opacity: 0.85;
-        letter-spacing: 0.2px;
+        opacity: 0.75;
         text-align: center;
     }
 
     /* Barcode */
     .barcode-img {
         width: 100%;
-        max-width: 260px;
-        height: 40px;
-        margin: 16px auto 4px;
+        max-width: 280px;
+        height: 36px;
+        margin: 14px auto 4px;
         display: block;
         filter: grayscale(100%);
-        opacity: 0.55;
+        opacity: 0.50;
         object-fit: contain;
     }
 
     #barcode-id {
         font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
+        font-size: 12px;
         opacity: 0.85;
         text-align: center;
         display: block;
+        margin-top: 6px;
+    }
+
+    .credits-line {
+        font-size: 12px;
+        text-align: center;
         margin-top: 4px;
+        margin-bottom: 0;
     }
 </style>
 </head>
@@ -329,9 +338,17 @@
     <!-- TOTAL SAVINGS BLOCK -->
     <div id="savings-block" style="display:none;">
         <div class="savings-stars">********************************************</div>
-        <div class="savings-line" id="savings-line">Total Savings $0.00</div>
+
+        <div class="savings-line">
+            <span>Total Savings</span>
+            <span id="savings-amount">$0.00</span>
+        </div>
+
         <div class="savings-stars">********************************************</div>
-        <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
+
+        <div class="savings-note">
+            Total Savings include any Promotional and Loyalty Discounts.
+        </div>
     </div>
 
     <!-- FLYBUYS BLOCK -->
@@ -341,6 +358,9 @@
     <!-- BARCODE -->
     <img id="barcode" class="barcode-img" alt="Barcode">
     <span id="barcode-id"></span>
+
+    <!-- CREDITS -->
+    <div class="line credits-line" id="credits-line">Credits earned this visit: 0</div>
 
 </div>
 
@@ -360,7 +380,7 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
-/* Barcode */
+/* Barcode image */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
     let url = `https://barcode.tec-it.com/barcode.ashx?data=${receiptNumber}&code=Code128&dpi=96`;
@@ -368,7 +388,7 @@ function generateBarcode() {
 }
 generateBarcode();
 
-/* Barcode ID (long numeric string) */
+/* Long transaction ID under barcode */
 function generateBarcodeID() {
     let id = Date.now().toString() + Math.floor(Math.random() * 1000);
     document.getElementById('barcode-id').innerText = id;
@@ -412,7 +432,7 @@ function formatUnitPrice(value) {
     return s;
 }
 
-/* Load data with quantity + multibuy + savings */
+/* Load data with quantity + multibuy + savings + credits */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
@@ -493,12 +513,16 @@ async function loadData() {
         document.getElementById('card-total').innerText = '$' + total.toFixed(2);
 
         if (totalSavings > 0) {
-            document.getElementById('savings-line').innerText =
-                'Total Savings $' + totalSavings.toFixed(2);
+            document.getElementById('savings-amount').innerText =
+                '$' + totalSavings.toFixed(2);
             document.getElementById('savings-block').style.display = 'block';
         } else {
             document.getElementById('savings-block').style.display = 'none';
         }
+
+        const credits = Math.floor(total / 20);
+        document.getElementById('credits-line').innerText =
+            'Credits earned this visit: ' + credits;
 
     } catch (e) {
         document.getElementById('items-box').innerText = 'Error loading items';
