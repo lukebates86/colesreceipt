@@ -87,6 +87,19 @@
         cursor: pointer;
     }
 
+    /* ⭐ NEW COLes-accurate header spacing */
+    .header-block .line {
+        margin: 4px 0;
+    }
+
+    .header-block .line:nth-child(4) {
+        margin-bottom: 8px; /* gap before Register/Receipt */
+    }
+
+    .header-block .line:nth-child(6) {
+        margin-top: 6px; /* gap before Date/Time */
+    }
+
     .item-code {
         font-size: 11px;
         opacity: 0.65;
@@ -189,23 +202,22 @@
         <img src="Close.png" class="header-icon">
     </div>
 
-    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
-    <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
-    <div class="logo">coles</div>
+    <!-- ⭐ NEW HEADER BLOCK WITH CORRECT SPACING -->
+    <div class="header-block">
+        <div class="line">Store: 575 - Malvern</div>
+        <div class="line">Store Manager: Vikas</div>
+        <div class="line">Phone: (03) 9508 0200</div>
+        <div class="line">Served By: Assisted Checkout</div>
 
-    <div class="line">Store: 575 - Malvern</div>
-    <div class="line">Store Manager: Vikas</div>
-    <div class="line">Phone: (03) 9508 0200</div>
-    <div class="line">Served By: Assisted Checkout</div>
+        <div class="flex line">
+            <span>Register: 124</span>
+            <span>Receipt: 5808</span>
+        </div>
 
-    <div class="flex line">
-        <span>Register: 124</span>
-        <span>Receipt: 5808</span>
-    </div>
-
-    <div class="flex line">
-        <span>Date: <span id="cur-date"></span></span>
-        <span>Time: <span id="cur-time"></span></span>
+        <div class="flex line">
+            <span>Date: <span id="cur-date"></span></span>
+            <span>Time: <span id="cur-time"></span></span>
+        </div>
     </div>
 
     <div class="hr"></div>
