@@ -245,7 +245,7 @@
 
     <div class="hr-dashed"></div>
 
-        <!-- TOTALS CONTINUED FROM PART 1 -->
+            <!-- TOTALS CONTINUED FROM PART 1 -->
 
     <div class="flex line totals-subtotal">
         <span>SUBTOTAL</span>
@@ -359,10 +359,12 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
-/* Barcode image — NOW WITH WIDTH + HEIGHT OVERRIDE */
+/* NEW BARCODE — BWIP-JS (Coles-accurate thin bars) */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
-    let url = `https://barcode.tec-it.com/barcode.ashx?data=${receiptNumber}&code=Code128&dpi=96&width=280&height=60`;
+
+    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=2&height=10&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF`;
+
     document.getElementById('barcode').src = url;
 }
 generateBarcode();
@@ -410,7 +412,7 @@ function formatUnitPrice(value) {
 
 /* Load data with quantity + multibuy + savings + credits */
 async function loadData() {
-    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
+    const API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";  /* ← replace with your real URL */
 
     try {
         const res = await fetch(API_URL);
@@ -518,4 +520,3 @@ if ('serviceWorker' in navigator) {
 
 </body>
 </html>
-
