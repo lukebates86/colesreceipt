@@ -148,7 +148,7 @@
     /* FINAL BARCODE CSS */
     .barcode-img {
         width: 100%;
-        max-width: 280px;
+        max-width: 260px;
         height: auto;
         margin: 14px auto 4px;
         display: block;
@@ -321,11 +321,11 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
-/* FINAL BARCODE — COLes-accurate thin bars */
+/* FINAL BARCODE — 25% smaller, Coles-accurate */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
 
-    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.7&height=12&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF`;
+    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.3&height=9&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF`;
 
     document.getElementById('barcode').src = url;
 }
