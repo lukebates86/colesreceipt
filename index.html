@@ -18,9 +18,8 @@
         background: #dcdcdc;
         font-family: 'Roboto', sans-serif;
         margin: 0;
-        display: flex;
-        justify-content: center;
         padding: 10px;
+        display: block; /* FIXED: was flex, which breaks sticky */
     }
 
     .receipt {
@@ -30,7 +29,8 @@
         padding: 20px;
         box-shadow: 0 0 15px rgba(0,0,0,0.15);
         position: relative;
-        overflow: hidden;
+        margin: 0 auto; /* FIXED: replaces flex centering */
+        /* overflow: hidden;  <-- REMOVED: breaks sticky */
     }
 
     .line {
@@ -76,10 +76,10 @@
     }
 
     .logo {
-        font-size: 32px;
+        font-size: 38px;
         font-weight: 700;
         text-align: center;
-        color: #009950;
+        color: #e31837;
         margin: 6px 0 14px 0;
         letter-spacing: -2px;
     }
@@ -190,9 +190,9 @@
         <img src="Close.png" alt="Close" class="header-icon">
     </div>
 
-    <div class="line text-center">Woolworths Supermarkets Australia Pty Ltd</div>
+    <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
     <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
-    <div class="logo">Woolworths</div>
+    <div class="logo">coles</div>
 
     <div class="line">Store: 7723 - CS SSC</div>
     <div class="line">Store Manager: Alan Yee</div>
@@ -249,7 +249,7 @@
     <div class="hr-dashed" style="margin: 20px 0;"></div>
 
     <div class="flex line eft-line">
-        <span>Woolworths</span>
+        <span>Coles</span>
         <span>VIC AU</span>
     </div>
     <div class="flex line eft-line">
