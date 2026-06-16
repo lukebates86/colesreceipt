@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -39,9 +39,7 @@
         margin: 2px 0;
     }
 
-    .text-center {
-        text-align: center;
-    }
+    .text-center { text-align: center; }
 
     .flex {
         display: flex;
@@ -59,15 +57,8 @@
         text-align: right;
     }
 
-    .hr {
-        border-bottom: 2px solid #000;
-        margin: 12px 0;
-    }
-
-    .hr-dashed {
-        border-bottom: 1px dashed #000;
-        margin: 12px 0;
-    }
+    .hr { border-bottom: 2px solid #000; margin: 12px 0; }
+    .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
 
     .logo {
         font-size: 42px;
@@ -97,7 +88,6 @@
         width: 26px;
         height: 26px;
         object-fit: contain;
-        display: block;
         cursor: pointer;
     }
 
@@ -113,9 +103,7 @@
         transition: opacity 0.25s ease;
     }
 
-    .swipe-fade.visible {
-        opacity: 1;
-    }
+    .swipe-fade.visible { opacity: 1; }
 
     .item-code {
         font-size: 11px;
@@ -129,30 +117,22 @@
     .discount-line {
         font-weight: 700;
         font-size: 13px;
-        color: #000;
         margin: 2px 0;
     }
 
     .totals-subtotal { font-weight: 400; }
     .totals-gst { font-weight: 600; }
-    .totals-total {
-        font-weight: 700;
-        font-size: 14px;
-        margin-top: 4px;
-    }
+    .totals-total { font-weight: 700; font-size: 14px; margin-top: 4px; }
 
     .eft-line {
         font-family: 'Roboto Mono', monospace;
         font-size: 12px;
-        letter-spacing: 0.2px;
         margin: 2px 0;
     }
 
-    .eft-bold {
-        font-weight: 700;
-    }
+    .eft-bold { font-weight: 700; }
 
-    /* Taxable line above savings */
+    /* Taxable line */
     .taxable-banner {
         font-size: 13px;
         font-weight: 700;
@@ -185,7 +165,7 @@
         margin: 6px 0 10px 0;
     }
 
-    /* Flybuys block */
+    /* Flybuys */
     .tax-note {
         margin-top: 6px;
         margin-bottom: 2px;
@@ -198,7 +178,7 @@
     .barcode-img {
         width: 100%;
         max-width: 280px;
-        height: 36px;
+        height: 60px;
         margin: 14px auto 4px;
         display: block;
         filter: grayscale(100%);
@@ -211,7 +191,6 @@
         font-size: 12px;
         opacity: 0.85;
         text-align: center;
-        display: block;
         margin-top: 6px;
     }
 
@@ -219,7 +198,6 @@
         font-size: 12px;
         text-align: center;
         margin-top: 4px;
-        margin-bottom: 0;
     }
 </style>
 </head>
@@ -267,7 +245,8 @@
 
     <div class="hr-dashed"></div>
 
-    <!-- TOTALS -->
+        <!-- TOTALS CONTINUED FROM PART 1 -->
+
     <div class="flex line totals-subtotal">
         <span>SUBTOTAL</span>
         <span id="subtotal-amount">$0.00</span>
@@ -362,7 +341,7 @@
     <!-- CREDITS -->
     <div class="line credits-line" id="credits-line">Credits earned this visit: 0</div>
 
-</div>
+</div> <!-- END RECEIPT -->
 
 <script>
 /* Timestamp logic */
@@ -380,10 +359,10 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
-/* Barcode image */
+/* Barcode image — NOW WITH WIDTH + HEIGHT OVERRIDE */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
-    let url = `https://barcode.tec-it.com/barcode.ashx?data=${receiptNumber}&code=Code128&dpi=96`;
+    let url = `https://barcode.tec-it.com/barcode.ashx?data=${receiptNumber}&code=Code128&dpi=96&width=280&height=60`;
     document.getElementById('barcode').src = url;
 }
 generateBarcode();
@@ -421,20 +400,17 @@ document.querySelector(".header-bar").addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-/* Helper: format unit price for quantity line (drop trailing zeros) */
+/* Helper: format unit price for quantity line */
 function formatUnitPrice(value) {
     let s = value.toFixed(2);
-    if (s.endsWith("00")) {
-        s = s.slice(0, -3);
-    } else if (s.endsWith("0")) {
-        s = s.slice(0, -1);
-    }
+    if (s.endsWith("00")) s = s.slice(0, -3);
+    else if (s.endsWith("0")) s = s.slice(0, -1);
     return s;
 }
 
 /* Load data with quantity + multibuy + savings + credits */
 async function loadData() {
-    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
+    const API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
     try {
         const res = await fetch(API_URL);
@@ -542,3 +518,4 @@ if ('serviceWorker' in navigator) {
 
 </body>
 </html>
+
