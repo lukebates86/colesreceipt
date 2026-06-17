@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<script>document.write('<meta name="x-version" content="1.0.2">');</script>
+<script>document.write('<meta name="x-version" content="1.0.3">');</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Receipt</title>
@@ -155,7 +155,7 @@
     .savings-line {
         display: flex;
         justify-content: space-between;
-        font-size: 16px;
+        font-size: 20px; /* 25% bigger */
         font-weight: 800;
         margin: 2px 0;
         padding: 0 4px;
@@ -204,6 +204,15 @@
         font-size: 12px;
         text-align: center;
         margin-top: 4px;
+    }
+
+    .eftpos-block {
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    .eftpos-block .line {
+        font-size: 12px;
     }
 </style>
 </head>
@@ -270,6 +279,18 @@
         <span id="gst-total-amount">$0.00</span>
     </div>
 
+    <!-- EFTPOS block -->
+    <div class="eftpos-block">
+        <div class="line">VISA DEBIT PURCHASE</div>
+        <div class="line">CARD NUMBER: **** **** **** <span id="card-last4">1234</span></div>
+        <div class="line">APSN: 0000</div>
+        <div class="line">ATC: 0076</div>
+        <div class="line">AID: A0000000031010</div>
+        <div class="line">RRN: 001240580802</div>
+        <div class="line">APPROVED</div>
+        <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+    </div>
+
     <div class="hr-dashed" style="margin:20px 0;"></div>
 
     <div class="taxable-banner">% = Taxable items</div>
@@ -320,6 +341,13 @@ function generateBarcodeID() {
     document.getElementById('barcode-id').innerText = id;
 }
 generateBarcodeID();
+
+/* Random last 4 card digits */
+function generateCardLast4() {
+    let n = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    document.getElementById('card-last4').innerText = n;
+}
+generateCardLast4();
 
 /* Format unit price */
 function formatUnitPrice(value) {
