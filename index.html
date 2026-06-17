@@ -222,28 +222,72 @@ body {
     margin-top: 18px;
     margin-bottom: 8px;
     width: 100%;
-    display: block;
-    padding: 0;
-    letter-spacing: 0.3px;
     font-family: 'Roboto Mono', monospace;
     color: #000;
 }
 
-.eftpos-block .line {
-    display: block;
+.eft-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
     width: 100%;
     font-size: 12px;
     line-height: 1.05;
     margin: 0;
     padding: 0;
+}
+
+.eft-left {
+    flex: 1;
     text-align: left;
-    letter-spacing: 0.3px;
-    font-family: 'Roboto Mono', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.eft-right {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+    padding-left: 12px;
+}
+
+.eft-full {
+    width: 100%;
+    font-size: 12px;
+    line-height: 1.05;
+    margin-top: 2px;
     white-space: nowrap;
 }
 
-.eftpos-block .line + .line {
-    margin-top: 2px;
+    .receipt-header {
+    margin-bottom: 6px;
+    font-family: 'Roboto Mono', monospace;
+    color: #000;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    font-size: 12px;
+    line-height: 1.02;
+    margin: 0;
+    padding: 0;
+}
+
+.receipt-row .left {
+    flex: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.receipt-row .right {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+    padding-left: 10px;
 }
     
 </style>
@@ -312,15 +356,52 @@ body {
     </div>
 
     <!-- FIXED: Full EFTPOS block -->
-    <div class="eftpos-block">
-        <div class="line">**** <span id="card-last4">1728</span>   VISA</div>
-        <div class="line">CREDIT ACCOUNT   Visa Debit</div>
-        <div class="line">APSN 0000   ATC 0076   A0000000031010</div>
-        <div class="line" id="eft-purchase-line">PURCHASE   AUD$ 0.00</div>
-        <div class="line">RRN 001240580802   (00)APPROVED</div>
-        <div class="line">AUTH 841622</div>
-        <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+
+    <div class="receipt-header">
+    <div class="receipt-row header-row">
+        <span class="left">Coles</span>
+        <span class="right">VIC AU</span>
     </div>
+
+    <div class="receipt-row header-row">
+        <span class="left">15/06/26 23:22</span>
+        <span class="right">35695913   N575C4</span>
+    </div>
+</div>
+    
+<div class="eftpos-block">
+    <div class="eft-row">
+        <span class="eft-left">**** <span id="card-last4">1728</span></span>
+        <span class="eft-right">VISA</span>
+    </div>
+
+    <div class="eft-row">
+        <span class="eft-left">CREDIT ACCOUNT</span>
+        <span class="eft-right">Visa Debit</span>
+    </div>
+
+    <div class="eft-row">
+        <span class="eft-left">APSN 0000   ATC 0076</span>
+        <span class="eft-right">A0000000031010</span>
+    </div>
+
+    <div class="eft-row">
+        <span class="eft-left">PURCHASE</span>
+        <span class="eft-right" id="eft-purchase-line">AUD$ 0.00</span>
+    </div>
+
+    <div class="eft-row">
+        <span class="eft-left">RRN 001240580802</span>
+        <span class="eft-right">(00)APPROVED</span>
+    </div>
+
+    <div class="eft-row">
+        <span class="eft-left">AUTH 841622</span>
+        <span class="eft-right"></span>
+    </div>
+
+    <div class="eft-full">NO PIN OR SIGNATURE REQUIRED</div>
+</div>
 
     <div class="hr-dashed" style="margin:20px 0;"></div>
 
@@ -467,8 +548,8 @@ async function loadData() {
         document.getElementById('gst-total-amount').innerText = '$' + (taxableTotal / 11).toFixed(2);
 
         // FIXED: PURCHASE AUD$ matches total
-        document.getElementById('eft-purchase-line').innerText =
-            'PURCHASE   AUD$ ' + total.toFixed(2);
+            document.getElementById('eft-purchase-line').innerText = 'AUD$ ' + 
+            total.toFixed(2);
 
         if (totalSavings > 0) {
             document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
