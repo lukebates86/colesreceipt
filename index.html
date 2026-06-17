@@ -218,12 +218,52 @@ body {
     margin-top: 4px;
 }
 
+.receipt-header {
+    margin-bottom: 2px;
+    font-family: 'Roboto Mono', monospace;
+    color: #000;
+}
+
+.receipt-meta {
+    margin-top: 8px;
+    margin-bottom: 10px;
+    font-family: 'Roboto Mono', monospace;
+    color: #000;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+.receipt-row .left {
+    flex: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.receipt-row .right {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+    padding-left: 10px;
+}
+
 .eftpos-block {
-    margin-top: 18px;
+    margin-top: 0;
     margin-bottom: 8px;
     width: 100%;
     font-family: 'Roboto Mono', monospace;
     color: #000;
+    padding-top: 0;
 }
 
 .eft-row {
@@ -231,8 +271,8 @@ body {
     justify-content: space-between;
     align-items: baseline;
     width: 100%;
-    font-size: 12px;
-    line-height: 1.05;
+    font-size: 13px;
+    line-height: 1.5;
     margin: 0;
     padding: 0;
 }
@@ -242,6 +282,7 @@ body {
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
+    min-width: 0;
 }
 
 .eft-right {
@@ -253,41 +294,10 @@ body {
 
 .eft-full {
     width: 100%;
-    font-size: 12px;
-    line-height: 1.05;
+    font-size: 13px;
+    line-height: 1.5;
     margin-top: 2px;
     white-space: nowrap;
-}
-
-    .receipt-header {
-    margin-bottom: 6px;
-    font-family: 'Roboto Mono', monospace;
-    color: #000;
-}
-
-.receipt-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 100%;
-    font-size: 12px;
-    line-height: 1.02;
-    margin: 0;
-    padding: 0;
-}
-
-.receipt-row .left {
-    flex: 1;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.receipt-row .right {
-    flex: 0 0 auto;
-    text-align: right;
-    white-space: nowrap;
-    padding-left: 10px;
 }
     
 </style>
