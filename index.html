@@ -218,17 +218,13 @@ body {
     margin-top: 4px;
 }
 
-    #gst-total-amount {
-    /* no change here */
-}
-
 .gst-row {
     margin-bottom: 14px;
 }
 
 .receipt-header {
-    margin-bottom: 2px;
     margin-top: 0;
+    margin-bottom: 2px;
     font-family: 'Roboto Mono', monospace;
     color: #000;
 }
@@ -308,7 +304,6 @@ body {
     margin-top: 2px;
     white-space: nowrap;
 }
-    
 </style>
 </head>
 
@@ -358,7 +353,6 @@ body {
 
     <div class="hr-dashed"></div>
 
-    <!-- FIXED: Totals block formatting -->
     <div class="flex line totals-total">
         <span>Total for <span id="item-count">0</span> items:</span>
         <span id="total-amount">$0.00</span>
@@ -369,58 +363,56 @@ body {
         <span id="eft-amount">$0.00</span>
     </div>
 
-<div class="flex line gst-row">
-    <span>GST INCLUDED IN TOTAL</span>
-    <span id="gst-total-amount">$0.00</span>
-</div>
-
-    <!-- FIXED: Full EFTPOS block -->
+    <div class="flex line gst-row" style="margin-bottom:14px;">
+        <span>GST INCLUDED IN TOTAL</span>
+        <span id="gst-total-amount">$0.00</span>
+    </div>
 
     <div class="receipt-header">
-    <div class="receipt-row header-row">
-        <span class="left">Coles</span>
-        <span class="right">VIC AU</span>
+        <div class="receipt-row header-row">
+            <span class="left">Coles</span>
+            <span class="right">VIC AU</span>
+        </div>
+
+        <div class="receipt-row header-row">
+            <span class="left" id="eft-date-time"></span>
+            <span class="right">35695913   N575C4</span>
+        </div>
     </div>
 
-    <div class="receipt-row header-row">
-        <span class="left">15/06/26 23:22</span>
-        <span class="right">35695913   N575C4</span>
-    </div>
-</div>
-    
-<div class="eftpos-block">
-    <div class="eft-row">
-        <span class="eft-left">**** <span id="card-last4">1728</span></span>
-        <span class="eft-right">VISA</span>
-    </div>
+    <div class="eftpos-block">
+        <div class="eft-row">
+            <span class="eft-left">**** <span id="card-last4">1728</span></span>
+            <span class="eft-right">VISA</span>
+        </div>
 
-    <div class="eft-row">
-        <span class="eft-left">CREDIT ACCOUNT</span>
-        <span class="eft-right">Visa Debit</span>
-    </div>
+        <div class="eft-row">
+            <span class="eft-left">CREDIT ACCOUNT</span>
+            <span class="eft-right">Visa Debit</span>
+        </div>
 
-    <div class="eft-row">
-        <span class="eft-left">APSN 0000   ATC 0076</span>
-        <span class="eft-right">A0000000031010</span>
-    </div>
+        <div class="eft-row">
+            <span class="eft-left">APSN 0000   ATC 0076</span>
+            <span class="eft-right">A0000000031010</span>
+        </div>
 
-    <div class="eft-row">
-        <span class="eft-left">PURCHASE</span>
-        <span class="eft-right" id="eft-purchase-line">AUD$ 0.00</span>
-    </div>
+        <div class="eft-row">
+            <span class="eft-left">PURCHASE</span>
+            <span class="eft-right" id="eft-purchase-line">AUD$ 0.00</span>
+        </div>
 
-    <div class="eft-row">
-        <span class="eft-left">RRN 001240580802</span>
-        <span class="eft-right">(00)APPROVED</span>
-    </div>
+        <div class="eft-row">
+            <span class="eft-left">RRN 001240580802</span>
+            <span class="eft-right">(00)APPROVED</span>
+        </div>
 
-    <div class="eft-row">
-        <span class="eft-left">AUTH 841622</span>
-        <span class="eft-right"></span>
-    </div>
+        <div class="eft-row">
+            <span class="eft-left">AUTH 841622</span>
+            <span class="eft-right"></span>
+        </div>
 
-    <div class="eft-full">NO PIN OR SIGNATURE REQUIRED</div>
-</div>
+        <div class="eft-full">NO PIN OR SIGNATURE REQUIRED</div>
+    </div>
 
     <div class="hr-dashed" style="margin:20px 0;"></div>
 
@@ -450,10 +442,15 @@ body {
 function updateTimestamp() {
     const now = new Date();
     const d = now.toLocaleDateString('en-AU');
-    const t = now.toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:false});
+    const t = now.toLocaleTimeString('en-AU', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
 
     document.getElementById('cur-date').innerText = d;
     document.getElementById('cur-time').innerText = t;
+    document.getElementById('eft-date-time').innerText = `${d} ${t}`;
 }
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
@@ -517,9 +514,7 @@ async function loadData() {
             total += lineTotal;
             itemCount += quantity;
 
-            if (taxable) {
-                taxableTotal += lineTotal;
-            }
+            if (taxable) taxableTotal += lineTotal;
 
             container.innerHTML += `
                 <div class="flex line">
@@ -547,9 +542,7 @@ async function loadData() {
                     total -= discountValue;
                     totalSavings += discountValue;
 
-                    if (taxable) {
-                        taxableTotal -= discountValue;
-                    }
+                    if (taxable) taxableTotal -= discountValue;
 
                     container.innerHTML += `
                         <div class="flex line discount-line">
@@ -565,10 +558,7 @@ async function loadData() {
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-total-amount').innerText = '$' + (taxableTotal / 11).toFixed(2);
-
-        // FIXED: PURCHASE AUD$ matches total
-            document.getElementById('eft-purchase-line').innerText = 'AUD$ ' + 
-            total.toFixed(2);
+        document.getElementById('eft-purchase-line').innerText = 'AUD$ ' + total.toFixed(2);
 
         if (totalSavings > 0) {
             document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
