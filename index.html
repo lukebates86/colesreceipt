@@ -22,213 +22,228 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        background: #dcdcdc;
-        font-family: 'Roboto', sans-serif;
-        margin: 0;
-        padding: 10px;
-    }
+body {
+    background: #dcdcdc;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 10px;
+}
 
-    .receipt {
-        width: 100%;
-        max-width: 330px;
-        background: #fff;
-        padding: 20px;
-        margin: 0 auto;
-        box-shadow: 0 0 15px rgba(0,0,0,0.15);
-        letter-spacing: 0.5px;
-    }
+.receipt {
+    width: 100%;
+    max-width: 330px;
+    background: #fff;
+    padding: 20px;
+    margin: 0 auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    letter-spacing: 0.5px;
+    color: #000;
+}
 
-    .line {
-        font-size: 13px;
-        line-height: 1.15;
-        margin: 2px 0;
-    }
+.line {
+    font-size: 13px;
+    line-height: 1.15;
+    margin: 2px 0;
+}
 
-    .text-center { text-align: center; }
+.text-center {
+    text-align: center;
+}
 
-    .flex {
-        display: flex;
-        justify-content: space-between;
-    }
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
 
-    /* FIXED: better Coles-style midpoint alignment */
-    .flex span:first-child {
-        flex: 1;
-        padding-right: 14px; /* increased for real Coles spacing */
-    }
+.flex span:first-child {
+    flex: 1;
+    padding-right: 14px;
+    min-width: 0;
+}
 
-    .flex span:last-child {
-        min-width: 70px; /* increased to match real receipt */
-        text-align: right;
-    }
+.flex span:last-child {
+    min-width: 70px;
+    text-align: right;
+    flex-shrink: 0;
+}
 
-    .hr { border-bottom: 2px solid #000; margin: 12px 0; }
-    .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
+.hr {
+    border-bottom: 2px solid #000;
+    margin: 12px 0;
+}
 
-    .logo {
-        font-size: 42px;
-        font-weight: 700;
-        text-align: center;
-        color: #e31837;
-        margin: 6px 0 14px 0;
-        letter-spacing: -2.5px;
-    }
+.hr-dashed {
+    border-bottom: 1px dashed #000;
+    margin: 12px 0;
+}
 
-    .header-bar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        background: #fff;
-        padding: 15px 20px;
-        margin: -20px -20px 20px -20px;
-        border-bottom: 2px solid #dcdcdc;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 700;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-    }
+.logo {
+    font-size: 42px;
+    font-weight: 700;
+    text-align: center;
+    color: #e31837;
+    margin: 6px 0 14px 0;
+    letter-spacing: -2.5px;
+}
 
-    .header-icon {
-        width: 26px;
-        height: 26px;
-        object-fit: contain;
-        cursor: pointer;
-    }
+.header-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #fff;
+    padding: 15px 20px;
+    margin: -20px -20px 20px -20px;
+    border-bottom: 2px solid #dcdcdc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
 
-    .header-top {
-        letter-spacing: 0.45px;
-    }
+.header-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    cursor: pointer;
+}
 
-    .header-block {
-        letter-spacing: 0.45px;
-    }
+.header-top {
+    letter-spacing: 0.45px;
+}
 
-    .header-block .line {
-        margin: 4px 0;
-    }
+.header-block {
+    letter-spacing: 0.45px;
+}
 
-    .header-block .line:nth-child(4) {
-        margin-bottom: 8px;
-    }
+.header-block .line {
+    margin: 4px 0;
+}
 
-    .header-block .line:nth-child(6) {
-        margin-top: 6px;
-    }
+.header-block .line:nth-child(4) {
+    margin-bottom: 8px;
+}
 
-    .item-code {
-        font-size: 11px;
-        opacity: 0.65;
-        margin-top: -1px;
-        margin-bottom: 3px;
-        padding-left: 2px;
-    }
+.header-block .line:nth-child(6) {
+    margin-top: 6px;
+}
 
-    .discount-line {
-        font-weight: 700;
-        font-size: 13px;
-        margin: 2px 0;
-    }
+.item-code {
+    font-size: 11px;
+    opacity: 0.65;
+    margin-top: -1px;
+    margin-bottom: 3px;
+    padding-left: 2px;
+}
 
-    .totals-total {
-        font-weight: 700;
-        font-size: 14px;
-        margin-top: 4px;
-    }
+.discount-line {
+    font-weight: 700;
+    font-size: 13px;
+    margin: 2px 0;
+}
 
-    .taxable-banner {
-        font-size: 13px;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 2px;
-    }
+.totals-total {
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 4px;
+}
 
-    .savings-stars {
-        text-align: center;
-        font-size: 17px;
-        font-weight: 800;
-        margin: 0;
-    }
+.taxable-banner {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2px;
+}
 
-    .savings-line {
-        display: flex;
-        justify-content: space-between;
-        font-size: 20px;
-        font-weight: 800;
-        margin: 2px 0;
-        padding: 0 4px;
-    }
+.savings-stars {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 800;
+    margin: 0;
+}
 
-    .savings-note {
-        text-align: center;
-        font-size: 11px;
-        opacity: 0.75;
-        margin: 6px 0 10px 0;
-    }
+.savings-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 800;
+    margin: 2px 0;
+    padding: 0 4px;
+}
 
-    .tax-note {
-        margin-top: 6px;
-        margin-bottom: 2px;
-        font-size: 12px;
-        opacity: 0.75;
-        text-align: center;
-    }
+.savings-note {
+    text-align: center;
+    font-size: 11px;
+    opacity: 0.75;
+    margin: 6px 0 10px 0;
+}
 
-    .barcode-img {
-        width: 100%;
-        max-width: 260px;
-        height: auto;
-        margin: 14px auto 4px;
-        display: block;
-        object-fit: contain;
-    }
+.tax-note {
+    margin-top: 6px;
+    margin-bottom: 2px;
+    font-size: 12px;
+    opacity: 0.75;
+    text-align: center;
+}
 
-    #barcode {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.barcode-img {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    margin: 14px auto 4px;
+    display: block;
+    object-fit: contain;
+}
 
-    #barcode-id {
-        font-family: 'Roboto Mono', monospace;
-        font-size: 12px;
-        opacity: 0.85;
-        text-align: center;
-        display: block;
-        margin-top: 6px;
-    }
+#barcode {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-    .credits-line {
-        font-size: 12px;
-        text-align: center;
-        margin-top: 4px;
-    }
+#barcode-id {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    opacity: 0.85;
+    text-align: center;
+    display: block;
+    margin-top: 6px;
+}
 
-    /* FIXED: magenta gap */
-    .eftpos-block {
-        margin-top: 18px;
-        margin-bottom: 8px;
-    }
+.credits-line {
+    font-size: 12px;
+    text-align: center;
+    margin-top: 4px;
+}
 
-    .eftpos-block .line {
-        font-size: 12px;
-        margin: 1px 0;
-    }
-
-/* HARD RESET: Fix EFTPOS layout inheritance */
 .eftpos-block {
-    display: block !important;
-    width: 100% !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-top: 18px !important;
+    margin-top: 18px;
+    margin-bottom: 8px;
+    width: 100%;
+    display: block;
+    padding: 0;
+    letter-spacing: 0.3px;
+    font-family: 'Roboto Mono', monospace;
+    color: #000;
 }
 
 .eftpos-block .line {
-    display: block !important;
-    text-align: left !important;
+    display: block;
+    width: 100%;
+    font-size: 12px;
+    line-height: 1.05;
+    margin: 0;
+    padding: 0;
+    text-align: left;
     letter-spacing: 0.3px;
+    font-family: 'Roboto Mono', monospace;
+    white-space: nowrap;
+}
+
+.eftpos-block .line + .line {
+    margin-top: 2px;
 }
     
 </style>
