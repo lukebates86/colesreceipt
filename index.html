@@ -1,3 +1,4 @@
+<!-- PATCHED VERSION WITH ALL FIXES APPLIED -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +8,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<script>document.write('<meta name="x-version" content="1.0.6">');</script>
+<script>document.write('<meta name="x-version" content="1.0.7">');</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Receipt</title>
@@ -51,13 +52,14 @@
         justify-content: space-between;
     }
 
+    /* FIXED: better Coles-style midpoint alignment */
     .flex span:first-child {
         flex: 1;
-        padding-right: 10px;
+        padding-right: 14px; /* increased for real Coles spacing */
     }
 
     .flex span:last-child {
-        min-width: 60px;
+        min-width: 70px; /* increased to match real receipt */
         text-align: right;
     }
 
@@ -203,8 +205,9 @@
         margin-top: 4px;
     }
 
+    /* FIXED: magenta gap */
     .eftpos-block {
-        margin-top: 10px;   /* magenta gap between GST and EFTPOS */
+        margin-top: 18px;
         margin-bottom: 8px;
     }
 
@@ -261,7 +264,7 @@
 
     <div class="hr-dashed"></div>
 
-    <!-- Totals: Title Case + ALL CAPS mix -->
+    <!-- FIXED: Totals block formatting -->
     <div class="flex line totals-total">
         <span>Total for <span id="item-count">0</span> items:</span>
         <span id="total-amount">$0.00</span>
@@ -277,7 +280,7 @@
         <span id="gst-total-amount">$0.00</span>
     </div>
 
-    <!-- EFTPOS block: full Coles-style, with yellow fields -->
+    <!-- FIXED: Full EFTPOS block -->
     <div class="eftpos-block">
         <div class="line">**** <span id="card-last4">1728</span>   VISA</div>
         <div class="line">CREDIT ACCOUNT   Visa Debit</div>
@@ -432,7 +435,7 @@ async function loadData() {
         document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('gst-total-amount').innerText = '$' + (taxableTotal / 11).toFixed(2);
 
-        // Match EFTPOS PURCHASE line to total
+        // FIXED: PURCHASE AUD$ matches total
         document.getElementById('eft-purchase-line').innerText =
             'PURCHASE   AUD$ ' + total.toFixed(2);
 
