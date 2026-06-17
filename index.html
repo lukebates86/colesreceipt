@@ -3,13 +3,11 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- ⭐ HARD CACHE-BUSTING -->
+<!-- Cache busting -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-
-<!-- ⭐ VERSION TAG (bump this when updating) -->
-<script>document.write('<meta name="x-version" content="1.0.1">');</script>
+<script>document.write('<meta name="x-version" content="1.0.2">');</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Receipt</title>
@@ -256,18 +254,9 @@
 
     <div class="hr-dashed"></div>
 
-    <div class="flex line">
-        <span>SUBTOTAL</span>
-        <span id="subtotal-amount">$0.00</span>
-    </div>
-
-    <div class="flex line">
-        <span>GST INCLUDED</span>
-        <span id="gst-amount">$0.00</span>
-    </div>
-
+    <!-- Totals: Coles-style -->
     <div class="flex line totals-total">
-        <span>TOTAL</span>
+        <span>Total for <span id="item-count">0</span> items:</span>
         <span id="total-amount">$0.00</span>
     </div>
 
@@ -276,7 +265,7 @@
         <span id="eft-amount">$0.00</span>
     </div>
 
-    <div class="flex line" style="font-weight:700;">
+    <div class="flex line">
         <span>GST INCLUDED IN TOTAL</span>
         <span id="gst-total-amount">$0.00</span>
     </div>
@@ -286,12 +275,12 @@
     <div class="taxable-banner">% = Taxable items</div>
 
     <div id="savings-block" style="display:none;">
-        <div class="savings-stars">********************************************</div>
+        <div class="savings-stars">**************************************</div>
         <div class="savings-line">
             <span>Total Savings</span>
             <span id="savings-amount">$0.00</span>
         </div>
-        <div class="savings-stars">********************************************</div>
+        <div class="savings-stars">**************************************</div>
         <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
     </div>
 
@@ -317,12 +306,10 @@ function updateTimestamp() {
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
-/* ⭐ BARCODE WITH CACHE-BUSTER */
+/* Barcode with cache-buster */
 function generateBarcode() {
     let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
-
     let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.3&height=9&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF&v=${Date.now()}`;
-
     document.getElementById('barcode').src = url;
 }
 generateBarcode();
@@ -342,7 +329,7 @@ function formatUnitPrice(value) {
     return s;
 }
 
-/* ⭐ LOAD ITEMS WITH CACHE-BUSTER */
+/* Load items: Coles-style totals */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
@@ -355,6 +342,8 @@ async function loadData() {
 
         let total = 0;
         let totalSavings = 0;
+        let itemCount = 0;
+        let taxableTotal = 0;
 
         data.forEach(item => {
             const name = item.name;
@@ -367,6 +356,11 @@ async function loadData() {
 
             const lineTotal = unitPrice * quantity;
             total += lineTotal;
+            itemCount += quantity;
+
+            if (taxable) {
+                taxableTotal += lineTotal;
+            }
 
             container.innerHTML += `
                 <div class="flex line">
@@ -394,6 +388,10 @@ async function loadData() {
                     total -= discountValue;
                     totalSavings += discountValue;
 
+                    if (taxable) {
+                        taxableTotal -= discountValue;
+                    }
+
                     container.innerHTML += `
                         <div class="flex line discount-line">
                             <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
@@ -404,11 +402,10 @@ async function loadData() {
             }
         });
 
-        document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
-        document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
+        document.getElementById('item-count').innerText = itemCount;
         document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
         document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
-        document.getElementById('gst-total-amount').innerText = '$' + (total / 11).toFixed(2);
+        document.getElementById('gst-total-amount').innerText = '$' + (taxableTotal / 11).toFixed(2);
 
         if (totalSavings > 0) {
             document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
@@ -420,13 +417,18 @@ async function loadData() {
 
     } catch (e) {
         document.getElementById('items-box').innerText = 'Error loading items';
+        document.getElementById('item-count').innerText = '0';
+        document.getElementById('total-amount').innerText = '$0.00';
+        document.getElementById('eft-amount').innerText = '$0.00';
+        document.getElementById('gst-total-amount').innerText = '$0.00';
+        document.getElementById('credits-line').innerText = 'Credits earned this visit: 0';
     }
 }
 
 loadData();
 </script>
 
-<!-- ⭐ SERVICE WORKER KILLER -->
+<!-- Kill any rogue service workers -->
 <script>
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(regs => {
