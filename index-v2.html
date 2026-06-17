@@ -1,0 +1,474 @@
+<!-- PATCHED VERSION WITH ALL FIXES APPLIED -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- Cache busting -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<script>document.write('<meta name="x-version" content="1.0.7">');</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Receipt</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background: #dcdcdc;
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 10px;
+    }
+
+    .receipt {
+        width: 100%;
+        max-width: 330px;
+        background: #fff;
+        padding: 20px;
+        margin: 0 auto;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        letter-spacing: 0.5px;
+    }
+
+    .line {
+        font-size: 13px;
+        line-height: 1.15;
+        margin: 2px 0;
+    }
+
+    .text-center { text-align: center; }
+
+    .flex {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* FIXED: better Coles-style midpoint alignment */
+    .flex span:first-child {
+        flex: 1;
+        padding-right: 14px; /* increased for real Coles spacing */
+    }
+
+    .flex span:last-child {
+        min-width: 70px; /* increased to match real receipt */
+        text-align: right;
+    }
+
+    .hr { border-bottom: 2px solid #000; margin: 12px 0; }
+    .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
+
+    .logo {
+        font-size: 42px;
+        font-weight: 700;
+        text-align: center;
+        color: #e31837;
+        margin: 6px 0 14px 0;
+        letter-spacing: -2.5px;
+    }
+
+    .header-bar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #fff;
+        padding: 15px 20px;
+        margin: -20px -20px 20px -20px;
+        border-bottom: 2px solid #dcdcdc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 700;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+    }
+
+    .header-icon {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        cursor: pointer;
+    }
+
+    .header-top {
+        letter-spacing: 0.45px;
+    }
+
+    .header-block {
+        letter-spacing: 0.45px;
+    }
+
+    .header-block .line {
+        margin: 4px 0;
+    }
+
+    .header-block .line:nth-child(4) {
+        margin-bottom: 8px;
+    }
+
+    .header-block .line:nth-child(6) {
+        margin-top: 6px;
+    }
+
+    .item-code {
+        font-size: 11px;
+        opacity: 0.65;
+        margin-top: -1px;
+        margin-bottom: 3px;
+        padding-left: 2px;
+    }
+
+    .discount-line {
+        font-weight: 700;
+        font-size: 13px;
+        margin: 2px 0;
+    }
+
+    .totals-total {
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .taxable-banner {
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2px;
+    }
+
+    .savings-stars {
+        text-align: center;
+        font-size: 17px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .savings-line {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        font-weight: 800;
+        margin: 2px 0;
+        padding: 0 4px;
+    }
+
+    .savings-note {
+        text-align: center;
+        font-size: 11px;
+        opacity: 0.75;
+        margin: 6px 0 10px 0;
+    }
+
+    .tax-note {
+        margin-top: 6px;
+        margin-bottom: 2px;
+        font-size: 12px;
+        opacity: 0.75;
+        text-align: center;
+    }
+
+    .barcode-img {
+        width: 100%;
+        max-width: 260px;
+        height: auto;
+        margin: 14px auto 4px;
+        display: block;
+        object-fit: contain;
+    }
+
+    #barcode {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #barcode-id {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        opacity: 0.85;
+        text-align: center;
+        display: block;
+        margin-top: 6px;
+    }
+
+    .credits-line {
+        font-size: 12px;
+        text-align: center;
+        margin-top: 4px;
+    }
+
+    /* FIXED: magenta gap */
+    .eftpos-block {
+        margin-top: 18px;
+        margin-bottom: 8px;
+    }
+
+    .eftpos-block .line {
+        font-size: 12px;
+        margin: 1px 0;
+    }
+</style>
+</head>
+
+<body>
+<div class="receipt">
+
+    <div class="header-bar">
+        <img src="Share.png" class="header-icon">
+        <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
+        <img src="Close.png" class="header-icon">
+    </div>
+
+    <div class="header-top">
+        <div class="line text-center">Coles Supermarkets Australia Pty Ltd</div>
+        <div class="line text-center">Tax Invoice ABN: 45 004 189 708</div>
+    </div>
+
+    <div class="logo">coles</div>
+
+    <div class="header-block">
+        <div class="line">Store: 575 - Malvern</div>
+        <div class="line">Store Manager: Vikas</div>
+        <div class="line">Phone: (03) 9508 0200</div>
+        <div class="line">Served By: Assisted Checkout</div>
+
+        <div class="flex line">
+            <span>Register: 124</span>
+            <span>Receipt: 5808</span>
+        </div>
+
+        <div class="flex line">
+            <span>Date: <span id="cur-date"></span></span>
+            <span>Time: <span id="cur-time"></span></span>
+        </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="flex line" style="font-weight:700;">
+        <span>Description</span>
+        <span>$</span>
+    </div>
+
+    <div class="hr-dashed"></div>
+
+    <div id="items-box">Loading...</div>
+
+    <div class="hr-dashed"></div>
+
+    <!-- FIXED: Totals block formatting -->
+    <div class="flex line totals-total">
+        <span>Total for <span id="item-count">0</span> items:</span>
+        <span id="total-amount">$0.00</span>
+    </div>
+
+    <div class="flex line">
+        <span>EFT</span>
+        <span id="eft-amount">$0.00</span>
+    </div>
+
+    <div class="flex line">
+        <span>GST INCLUDED IN TOTAL</span>
+        <span id="gst-total-amount">$0.00</span>
+    </div>
+
+    <!-- FIXED: Full EFTPOS block -->
+    <div class="eftpos-block">
+        <div class="line">**** <span id="card-last4">1728</span>   VISA</div>
+        <div class="line">CREDIT ACCOUNT   Visa Debit</div>
+        <div class="line">APSN 0000   ATC 0076   A0000000031010</div>
+        <div class="line" id="eft-purchase-line">PURCHASE   AUD$ 0.00</div>
+        <div class="line">RRN 001240580802   (00)APPROVED</div>
+        <div class="line">AUTH 841622</div>
+        <div class="line">NO PIN OR SIGNATURE REQUIRED</div>
+    </div>
+
+    <div class="hr-dashed" style="margin:20px 0;"></div>
+
+    <div class="taxable-banner">% = Taxable items</div>
+
+    <div id="savings-block" style="display:none;">
+        <div class="savings-stars">**************************************</div>
+        <div class="savings-line">
+            <span>Total Savings</span>
+            <span id="savings-amount">$0.00</span>
+        </div>
+        <div class="savings-stars">**************************************</div>
+        <div class="savings-note">Total Savings include any Promotional and Loyalty Discounts.</div>
+    </div>
+
+    <div class="line tax-note">Flybuys Card NO: 27930284920194</div>
+    <div class="line tax-note">Flybuys points as of yesterday: 1,454</div>
+
+    <img id="barcode" class="barcode-img" alt="Barcode">
+    <span id="barcode-id"></span>
+
+    <div class="line credits-line" id="credits-line">Credits earned this visit: 0</div>
+
+</div>
+
+<script>
+function updateTimestamp() {
+    const now = new Date();
+    const d = now.toLocaleDateString('en-AU');
+    const t = now.toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:false});
+
+    document.getElementById('cur-date').innerText = d;
+    document.getElementById('cur-time').innerText = t;
+}
+updateTimestamp();
+setInterval(updateTimestamp, 1000);
+
+/* Barcode with cache-buster */
+function generateBarcode() {
+    let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
+    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.3&height=9&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF&v=${Date.now()}`;
+    document.getElementById('barcode').src = url;
+}
+generateBarcode();
+
+/* Long transaction ID */
+function generateBarcodeID() {
+    let id = Date.now().toString() + Math.floor(Math.random() * 1000);
+    document.getElementById('barcode-id').innerText = id;
+}
+generateBarcodeID();
+
+/* Random last 4 card digits */
+function generateCardLast4() {
+    let n = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    document.getElementById('card-last4').innerText = n;
+}
+generateCardLast4();
+
+/* Format unit price */
+function formatUnitPrice(value) {
+    let s = value.toFixed(2);
+    if (s.endsWith("00")) s = s.slice(0, -3);
+    else if (s.endsWith("0")) s = s.slice(0, -1);
+    return s;
+}
+
+/* Load items + offers + savings + GST */
+async function loadData() {
+    const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
+
+    try {
+        const res = await fetch(API_URL + '?v=' + Date.now());
+        const data = await res.json();
+
+        let container = document.getElementById('items-box');
+        container.innerHTML = "";
+
+        let total = 0;
+        let totalSavings = 0;
+        let itemCount = 0;
+        let taxableTotal = 0;
+
+        data.forEach(item => {
+            const name = item.name;
+            const unitPrice = Number(item.price);
+            const quantity = Number(item.quantity ?? 1);
+            const code = item.code;
+            const offerQty = Number(item.offerQty ?? 0);
+            const offerTotal = Number(item.offerTotal ?? 0);
+            const taxable = ["true","TRUE","1",1,true].includes(item.taxable);
+
+            const lineTotal = unitPrice * quantity;
+            total += lineTotal;
+            itemCount += quantity;
+
+            if (taxable) {
+                taxableTotal += lineTotal;
+            }
+
+            container.innerHTML += `
+                <div class="flex line">
+                    <span>${taxable ? '% ' : ''}${name}</span>
+                    <span>$${lineTotal.toFixed(2)}</span>
+                </div>
+                ${code ? `<div class="item-code">${code}</div>` : ""}
+            `;
+
+            if (quantity > 1) {
+                container.innerHTML += `
+                    <div class="line" style="padding-left:2px;">
+                        ${quantity} @ $${formatUnitPrice(unitPrice)} EACH
+                    </div>
+                `;
+            }
+
+            if (offerQty && offerTotal && quantity >= offerQty) {
+                const fullOffers = Math.floor(quantity / offerQty);
+                const normalPrice = offerQty * unitPrice * fullOffers;
+                const dealPrice = offerTotal * fullOffers;
+                const discountValue = normalPrice - dealPrice;
+
+                if (discountValue > 0) {
+                    total -= discountValue;
+                    totalSavings += discountValue;
+
+                    if (taxable) {
+                        taxableTotal -= discountValue;
+                    }
+
+                    container.innerHTML += `
+                        <div class="flex line discount-line">
+                            <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
+                            <span>-$${discountValue.toFixed(2)}</span>
+                        </div>
+                    `;
+                }
+            }
+        });
+
+        document.getElementById('item-count').innerText = itemCount;
+        document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('gst-total-amount').innerText = '$' + (taxableTotal / 11).toFixed(2);
+
+        // FIXED: PURCHASE AUD$ matches total
+        document.getElementById('eft-purchase-line').innerText =
+            'PURCHASE   AUD$ ' + total.toFixed(2);
+
+        if (totalSavings > 0) {
+            document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
+            document.getElementById('savings-block').style.display = 'block';
+        }
+
+        const credits = Math.floor(total / 20);
+        document.getElementById('credits-line').innerText = 'Credits earned this visit: ' + credits;
+
+    } catch (e) {
+        document.getElementById('items-box').innerText = 'Error loading items';
+        document.getElementById('item-count').innerText = '0';
+        document.getElementById('total-amount').innerText = '$0.00';
+        document.getElementById('eft-amount').innerText = '$0.00';
+        document.getElementById('gst-total-amount').innerText = '$0.00';
+        document.getElementById('eft-purchase-line').innerText = 'PURCHASE   AUD$ 0.00';
+        document.getElementById('credits-line').innerText = 'Credits earned this visit: 0';
+    }
+}
+
+loadData();
+</script>
+
+<!-- Kill any rogue service workers -->
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+    });
+}
+</script>
+
+</body>
+</html>
