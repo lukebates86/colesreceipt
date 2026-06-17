@@ -3,11 +3,14 @@
 <head>
 <meta charset="UTF-8">
 
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<!-- ⭐ HARD CACHE-BUSTING -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 
-<meta name="x-version" content="1.0.1">
+<!-- ⭐ VERSION TAG (bump this when updating) -->
+<script>document.write('<meta name="x-version" content="1.0.1">');</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Receipt</title>
 
@@ -39,11 +42,6 @@
 
     .logo {
         letter-spacing: -2.5px;
-        font-size: 42px;
-        font-weight: 700;
-        text-align: center;
-        color: #e31837;
-        margin: 6px 0 14px 0;
     }
 
     .line {
@@ -72,6 +70,14 @@
     .hr { border-bottom: 2px solid #000; margin: 12px 0; }
     .hr-dashed { border-bottom: 1px dashed #000; margin: 12px 0; }
 
+    .logo {
+        font-size: 42px;
+        font-weight: 700;
+        text-align: center;
+        color: #e31837;
+        margin: 6px 0 14px 0;
+    }
+
     .header-bar {
         position: sticky;
         top: 0;
@@ -94,13 +100,24 @@
         cursor: pointer;
     }
 
-    .header-top,
+    .header-top {
+        letter-spacing: 0.45px;
+    }
+
     .header-block {
         letter-spacing: 0.45px;
     }
 
     .header-block .line {
         margin: 4px 0;
+    }
+
+    .header-block .line:nth-child(4) {
+        margin-bottom: 8px;
+    }
+
+    .header-block .line:nth-child(6) {
+        margin-top: 6px;
     }
 
     .item-code {
@@ -197,9 +214,9 @@
 <div class="receipt">
 
     <div class="header-bar">
-        <img src="Share.png" class="header-icon" alt="Share">
+        <img src="Share.png" class="header-icon">
         <span style="font-size:16px; font-weight:700;">Digital Receipt</span>
-        <img src="Close.png" class="header-icon" alt="Close">
+        <img src="Close.png" class="header-icon">
     </div>
 
     <div class="header-top">
@@ -292,30 +309,32 @@
 function updateTimestamp() {
     const now = new Date();
     const d = now.toLocaleDateString('en-AU');
-    const t = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const t = now.toLocaleTimeString('en-AU', {hour:'2-digit', minute:'2-digit', hour12:false});
 
     document.getElementById('cur-date').innerText = d;
     document.getElementById('cur-time').innerText = t;
 }
-
 updateTimestamp();
 setInterval(updateTimestamp, 1000);
 
+/* ⭐ BARCODE WITH CACHE-BUSTER */
 function generateBarcode() {
-    const receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
-    const url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${encodeURIComponent(receiptNumber)}&scale=1.3&height=9&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF&v=${Date.now()}`;
+    let receiptNumber = Math.floor(100000000 + Math.random() * 900000000);
+
+    let url = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${receiptNumber}&scale=1.3&height=9&includetext=false&paddingwidth=0&paddingheight=0&backgroundcolor=FFFFFF&v=${Date.now()}`;
+
     document.getElementById('barcode').src = url;
 }
-
 generateBarcode();
 
+/* Long transaction ID */
 function generateBarcodeID() {
-    const id = Date.now().toString() + Math.floor(Math.random() * 1000);
+    let id = Date.now().toString() + Math.floor(Math.random() * 1000);
     document.getElementById('barcode-id').innerText = id;
 }
-
 generateBarcodeID();
 
+/* Format unit price */
 function formatUnitPrice(value) {
     let s = value.toFixed(2);
     if (s.endsWith("00")) s = s.slice(0, -3);
@@ -323,70 +342,59 @@ function formatUnitPrice(value) {
     return s;
 }
 
+/* ⭐ LOAD ITEMS WITH CACHE-BUSTER */
 async function loadData() {
     const API_URL = "https://script.google.com/macros/s/AKfycbzJ5lairfr3sRnqpWsh_GKAMti_ARi9gILolaeKxBofVrNrqXYrHRdtTTXFWVSJc9xM/exec";
 
-    const itemsBox = document.getElementById('items-box');
-    itemsBox.innerHTML = 'Loading...';
-
     try {
-        const res = await fetch(API_URL + '?v=' + Date.now(), { cache: 'no-store' });
-
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
-        }
-
+        const res = await fetch(API_URL + '?v=' + Date.now());
         const data = await res.json();
 
-        if (!Array.isArray(data)) {
-            throw new Error('Invalid data format');
-        }
+        let container = document.getElementById('items-box');
+        container.innerHTML = "";
 
-        let grossTotal = 0;
-        let discountTotal = 0;
-        let itemsHtml = '';
+        let total = 0;
+        let totalSavings = 0;
 
         data.forEach(item => {
-            const name = String(item.name ?? '');
-            const unitPrice = Number(item.price ?? 0);
+            const name = item.name;
+            const unitPrice = Number(item.price);
             const quantity = Number(item.quantity ?? 1);
-            const code = item.code ? String(item.code) : '';
+            const code = item.code;
             const offerQty = Number(item.offerQty ?? 0);
             const offerTotal = Number(item.offerTotal ?? 0);
-            const taxable = ["true", "TRUE", "1", 1, true].includes(item.taxable);
+            const taxable = ["true","TRUE","1",1,true].includes(item.taxable);
 
             const lineTotal = unitPrice * quantity;
-            grossTotal += lineTotal;
+            total += lineTotal;
 
-            itemsHtml += `
+            container.innerHTML += `
                 <div class="flex line">
                     <span>${taxable ? '% ' : ''}${name}</span>
                     <span>$${lineTotal.toFixed(2)}</span>
                 </div>
+                ${code ? `<div class="item-code">${code}</div>` : ""}
             `;
 
-            if (code) {
-                itemsHtml += `<div class="item-code">${code}</div>`;
-            }
-
             if (quantity > 1) {
-                itemsHtml += `
+                container.innerHTML += `
                     <div class="line" style="padding-left:2px;">
                         ${quantity} @ $${formatUnitPrice(unitPrice)} EACH
                     </div>
                 `;
             }
 
-            if (offerQty > 0 && offerTotal > 0 && quantity >= offerQty) {
+            if (offerQty && offerTotal && quantity >= offerQty) {
                 const fullOffers = Math.floor(quantity / offerQty);
                 const normalPrice = offerQty * unitPrice * fullOffers;
                 const dealPrice = offerTotal * fullOffers;
                 const discountValue = normalPrice - dealPrice;
 
                 if (discountValue > 0) {
-                    discountTotal += discountValue;
+                    total -= discountValue;
+                    totalSavings += discountValue;
 
-                    itemsHtml += `
+                    container.innerHTML += `
                         <div class="flex line discount-line">
                             <span>${name} ANY ${offerQty} FOR $${offerTotal}</span>
                             <span>-$${discountValue.toFixed(2)}</span>
@@ -396,44 +404,35 @@ async function loadData() {
             }
         });
 
-        const netTotal = Math.max(0, grossTotal - discountTotal);
-        const gst = netTotal / 11;
+        document.getElementById('subtotal-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('gst-amount').innerText = '$' + (total / 11).toFixed(2);
+        document.getElementById('total-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('eft-amount').innerText = '$' + total.toFixed(2);
+        document.getElementById('gst-total-amount').innerText = '$' + (total / 11).toFixed(2);
 
-        itemsBox.innerHTML = itemsHtml || '<div class="line">No items found</div>';
-
-        document.getElementById('subtotal-amount').innerText = '$' + grossTotal.toFixed(2);
-        document.getElementById('gst-amount').innerText = '$' + gst.toFixed(2);
-        document.getElementById('total-amount').innerText = '$' + netTotal.toFixed(2);
-        document.getElementById('eft-amount').innerText = '$' + netTotal.toFixed(2);
-        document.getElementById('gst-total-amount').innerText = '$' + gst.toFixed(2);
-
-        if (discountTotal > 0) {
-            document.getElementById('savings-amount').innerText = '$' + discountTotal.toFixed(2);
+        if (totalSavings > 0) {
+            document.getElementById('savings-amount').innerText = '$' + totalSavings.toFixed(2);
             document.getElementById('savings-block').style.display = 'block';
-        } else {
-            document.getElementById('savings-block').style.display = 'none';
         }
 
-        const credits = Math.floor(netTotal / 20);
+        const credits = Math.floor(total / 20);
         document.getElementById('credits-line').innerText = 'Credits earned this visit: ' + credits;
 
     } catch (e) {
-        itemsBox.innerText = 'Error loading items';
+        document.getElementById('items-box').innerText = 'Error loading items';
     }
 }
 
 loadData();
 </script>
 
+<!-- ⭐ SERVICE WORKER KILLER -->
 <script>
-(async function () {
-    if ('serviceWorker' in navigator) {
-        try {
-            const regs = await navigator.serviceWorker.getRegistrations();
-            await Promise.all(regs.map(reg => reg.unregister()));
-        } catch (e) {}
-    }
-})();
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+    });
+}
 </script>
 
 </body>
